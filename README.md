@@ -29,4 +29,4 @@ Columns (first row): Date, Time, Event Name, Venue Name, Address, City, State, Z
 
 ## Event submissions
 
-`submit.html` emails each submission (Submitter Name, Email, Event link) to nedu@nedairfilters.com with the subject "Event Crawler Event Submission", using FormSubmit (formsubmit.co, free, no account). The address is set in the `SUBMIT_URL` line of `submit.html`.
+`submit.html` emails each submission (Submitter Name, Email, Event link) to the site owner with the subject "Event Crawler Event Submission", using FormSubmit (formsubmit.co, free, no account). The `SUBMIT_URL` line in `submit.html` uses the FormSubmit alias code, so the real email address never appears on the site.

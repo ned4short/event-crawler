@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="styles.css?v=5">
+<link rel="stylesheet" href="styles.css?v=8">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"Event Crawler","url":"https://eventcrawler.nedwebservices.com/","description":"Search local events in San Antonio by date and distance.","publisher":{"@type":"Organization","name":"Ned Web Services","url":"https://nedwebservices.com"}}
 </script>
@@ -111,15 +111,22 @@
   <footer class="wrap site-footer">
     <p>Events are gathered from public listings. Please confirm times and prices with the organizer before you go.</p>
     <p>Event Crawler is brought to you by:<br>
-      <a href="https://nedwebservices.com/">Ned Web Services</a> &amp; <a href="https://ateapartyinabox.com/pages/the-tea-blossom">The Tea Blossom</a><br>
+      <a href="https://nedwebservices.com/" target="_blank" rel="noopener">Ned Web Services</a> &amp; <a href="https://ateapartyinabox.com/pages/the-tea-blossom" target="_blank" rel="noopener">The Tea Blossom</a><br>
       2026</p>
   </footer>
+
+  <section class="wrap ads" aria-label="Advertisers">
+    <h2>Advertisers</h2>
+    <div class="ads-carousel" data-ads></div>
+    <a href="advertise.html" class="primary cta-btn">Advertise with us</a>
+  </section>
 </div>
 <script>
 // The "Event Crawler" Google Sheet, published to the web as CSV
 // (Google Sheets: File > Share > Publish to web > Sheet1 > Comma-separated values).
 window.EVENT_SHEET_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSh94qFcl6AXZBlNRhhlLiDyJpyYA4_oqdyIBvnuGmy6kfiIjeO6XCfll9ETfu-9anR6Y-tsipBt7GO/pub?output=csv';
 </script>
-<script src="app.js?v=5"></script>
+<script src="app.js?v=8"></script>
+<script src="ads.js?v=8"></script>
 </body>
 </html>

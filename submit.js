@@ -30,7 +30,6 @@
     if (f.website.value) { done(); return; } // spam bot filled the hidden field
 
     btn.disabled = true;
-    btn.textContent = 'Sending…';
     msg.className = 'form-msg';
     msg.textContent = '';
 
@@ -60,9 +59,11 @@
   });
 
   function done() {
-    form.hidden = true;
+    btn.disabled = true;
+    btn.textContent = 'Sent';
+    [f.name, f.email, f.link].forEach(function (i) { i.readOnly = true; });
     var t = document.getElementById('thanks');
     t.hidden = false;
-    t.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    t.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 })();

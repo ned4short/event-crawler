@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Event Crawler – Things to Do in San Antonio Today</title>
+<meta name="description" content="Find events happening in San Antonio today, tomorrow, this weekend or any date. Search concerts, markets, classes and community events near you, within 1 to 40 miles.">
+<link rel="canonical" href="https://eventcrawler.nedwebservices.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Event Crawler – Things to Do in San Antonio">
+<meta property="og:description" content="Concerts, markets, classes and community events from all over San Antonio, in one place and updated every day.">
+<meta property="og:url" content="https://eventcrawler.nedwebservices.com/">
+<meta property="og:image" content="https://eventcrawler.nedwebservices.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#D62839">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"Event Crawler","url":"https://eventcrawler.nedwebservices.com/","description":"Search local events in San Antonio by date and distance.","publisher":{"@type":"Organization","name":"Ned Web Services","url":"https://nedwebservices.com"}}
+</script>
+</head>
+<body>
+<div class="page">
+
+  <header class="site-header wrap">
+    <a href="./" class="logo">
+      <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" fill="#D62839"/>
+        <rect x="24" y="2" width="18" height="18" rx="2" fill="#1F4FBF"/>
+        <path d="M2 42 L22 24 L22 42 Z" fill="#FFC93C"/>
+        <rect x="24" y="24" width="18" height="18" rx="9" fill="none" stroke="#14213D" stroke-width="3"/>
+      </svg>
+      <span>Event Crawler</span>
+    </a>
+    <div class="city-pill">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D62839" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+      <span>San Antonio, TX</span>
+      <span class="muted">· more cities soon</span>
+    </div>
+  </header>
+
+  <section class="hero wrap">
+    <h1>Find something to do in <span class="hl">San Antonio</span><span class="red">.</span></h1>
+    <p>Concerts, markets, classes and community events from all over town, gathered in one place and updated every day.</p>
+  </section>
+
+  <section class="wrap">
+    <form class="search" id="search" role="search">
+      <div class="search-row">
+        <label class="field grow2">What
+          <input type="search" id="q" placeholder="Search events or venues" autocomplete="off">
+        </label>
+        <label class="field grow1">Near
+          <span class="near">
+            <input type="text" id="zip" inputmode="numeric" maxlength="5" placeholder="ZIP code" autocomplete="postal-code">
+            <button type="button" id="locate" class="icon-btn" aria-label="Use my location" title="Use my location">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+            </button>
+          </span>
+        </label>
+        <button type="submit" class="primary">Find events</button>
+      </div>
+      <p class="near-note" id="near-note" aria-live="polite"></p>
+
+      <div class="filters">
+        <div class="filter-group">
+          <span class="filter-label" id="when-label">When</span>
+          <div class="chips" role="group" aria-labelledby="when-label">
+            <button type="button" class="chip when" data-when="today" aria-pressed="true">Today</button>
+            <button type="button" class="chip when" data-when="tomorrow" aria-pressed="false">Tomorrow</button>
+            <button type="button" class="chip when" data-when="weekend" aria-pressed="false">This weekend</button>
+            <label class="chip date-chip">Pick a date
+              <input type="date" id="pick">
+            </label>
+          </div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label" id="dist-label">Distance</span>
+          <div class="chips" role="group" aria-labelledby="dist-label">
+            <button type="button" class="chip dist" data-mi="1" aria-pressed="false">1 mi</button>
+            <button type="button" class="chip dist" data-mi="5" aria-pressed="false">5 mi</button>
+            <button type="button" class="chip dist" data-mi="10" aria-pressed="false">10 mi</button>
+            <button type="button" class="chip dist" data-mi="20" aria-pressed="true">20 mi</button>
+            <button type="button" class="chip dist" data-mi="40" aria-pressed="false">40 mi</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <main class="wrap results" id="results">
+    <div class="results-head">
+      <div>
+        <h2 id="heading">Today</h2>
+        <p id="summary" class="muted">Loading events…</p>
+      </div>
+      <label class="free-toggle">
+        <input type="checkbox" id="free"> Free events only
+      </label>
+    </div>
+    <div id="list" aria-live="polite"></div>
+  </main>
+
+  <footer class="wrap site-footer">
+    <p>Events are gathered from public listings. Please confirm times and prices with the organizer before you go.</p>
+    <p>An <a href="https://nedwebservices.com">Ned Web Services</a> project</p>
+  </footer>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

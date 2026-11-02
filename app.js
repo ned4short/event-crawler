@@ -1,0 +1,226 @@
+(function () {
+  'use strict';
+
+  var TZ = 'America/Chicago';
+  var DOWNTOWN = { lat: 29.4241, lng: -98.4936, label: 'downtown San Antonio' };
+  var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  var state = {
+    when: 'today', picked: '', radius: 20, freeOnly: false, query: '',
+    origin: DOWNTOWN
+  };
+  var events = [];
+  var zips = null;
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  // ---------- dates (always San Antonio time) ----------
+  function todayIso() {
+    var parts = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+    var get = function (t) { return parts.filter(function (p) { return p.type === t; })[0].value; };
+    return get('year') + '-' + get('month') + '-' + get('day');
+  }
+  function toDate(iso) { var p = iso.split('-').map(Number); return new Date(Date.UTC(p[0], p[1] - 1, p[2])); }
+  function toIso(d) { return d.toISOString().slice(0, 10); }
+  function addDays(iso, n) { var d = toDate(iso); d.setUTCDate(d.getUTCDate() + n); return toIso(d); }
+  function longDate(iso) { var d = toDate(iso); return DAYS[d.getUTCDay()] + ', ' + MONTHS[d.getUTCMonth()] + ' ' + d.getUTCDate(); }
+  function shortDate(iso) { var d = toDate(iso); return DAYS[d.getUTCDay()].slice(0, 3) + ', ' + MONTHS[d.getUTCMonth()].slice(0, 3) + ' ' + d.getUTCDate(); }
+
+  function dateRange() {
+    var t = todayIso();
+    if (state.when === 'tomorrow') { var tm = addDays(t, 1); return { from: tm, to: tm, title: 'Tomorrow · ' + longDate(tm) }; }
+    if (state.when === 'weekend') {
+      var dow = toDate(t).getUTCDay();
+      var sat = dow === 6 ? t : dow === 0 ? addDays(t, -1) : addDays(t, 6 - dow);
+      var from = dow === 0 ? t : sat, to = addDays(sat, 1);
+      return { from: from, to: to, title: 'This weekend · ' + shortDate(sat) + ' – ' + shortDate(to), multi: true };
+    }
+    if (state.when === 'pick' && state.picked) { return { from: state.picked, to: state.picked, title: longDate(state.picked) }; }
+    return { from: t, to: t, title: 'Today · ' + longDate(t) };
+  }
+
+  // ---------- time and distance ----------
+  function minutes(time) {
+    var m = /^(\d{1,2}):(\d{2})\s*([AP]M)$/i.exec((time || '').trim());
+    if (!m) return 24 * 60;
+    var h = parseInt(m[1], 10) % 12 + (m[3].toUpperCase() === 'PM' ? 12 : 0);
+    return h * 60 + parseInt(m[2], 10);
+  }
+  function miles(a, b) {
+    var R = 3958.8, rad = Math.PI / 180;
+    var dLat = (b.lat - a.lat) * rad, dLng = (b.lng - a.lng) * rad;
+    var x = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    return 2 * R * Math.asin(Math.sqrt(x));
+  }
+  function isFree(p) { return /^free\b/i.test((p || '').trim()); }
+
+  // ---------- render ----------
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function render() {
+    var range = dateRange();
+    var q = state.query.trim().toLowerCase();
+    var list = events.filter(function (e) {
+      if (e.date < range.from || e.date > range.to) return false;
+      if (state.freeOnly && !isFree(e.price)) return false;
+      if (q && (e.name + ' ' + e.venue + ' ' + e.city).toLowerCase().indexOf(q) === -1) return false;
+      e._mi = (e.lat != null) ? miles(state.origin, e) : null;
+      if (e._mi != null && e._mi > state.radius) return false;
+      return true;
+    }).sort(function (a, b) {
+      return a.date < b.date ? -1 : a.date > b.date ? 1 : minutes(a.time) - minutes(b.time);
+    });
+
+    $('heading').textContent = range.title;
+    var n = list.length;
+    $('summary').textContent = n + (n === 1 ? ' event' : ' events') + ' within ' + state.radius + (state.radius === 1 ? ' mile' : ' miles') + ' of ' + state.origin.label;
+
+    var box = $('list');
+    box.textContent = '';
+    if (!n) {
+      var empty = el('div', 'empty');
+      empty.innerHTML = '<svg width="56" height="56" viewBox="0 0 44 44" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#D62839"/><rect x="24" y="2" width="18" height="18" rx="2" fill="#1F4FBF"/><path d="M2 42 L22 24 L22 42 Z" fill="#FFC93C"/></svg>';
+      empty.appendChild(el('p', 'big', 'No events found yet'));
+      empty.appendChild(el('p', 'muted', 'Our crawler adds new events every day. Try another date, a wider distance, or clear your search.'));
+      box.appendChild(empty);
+      return;
+    }
+
+    var groups = [];
+    list.forEach(function (e) {
+      var key, label, dot;
+      if (range.multi) { key = e.date; label = longDate(e.date); dot = 'afternoon'; }
+      else {
+        var m = minutes(e.time);
+        if (m < 12 * 60) { key = 'm'; label = 'Morning'; dot = 'morning'; }
+        else if (m < 17 * 60) { key = 'a'; label = 'Afternoon'; dot = 'afternoon'; }
+        else { key = 'e'; label = 'Evening'; dot = 'evening'; }
+      }
+      var g = groups[groups.length - 1];
+      if (!g || g.key !== key) { g = { key: key, label: label, dot: dot, items: [] }; groups.push(g); }
+      g.items.push(e);
+    });
+
+    groups.forEach(function (g) {
+      var sec = el('section', 'group');
+      var h = el('h3');
+      h.appendChild(el('span', 'dot ' + g.dot));
+      h.appendChild(document.createTextNode(g.label));
+      sec.appendChild(h);
+      g.items.forEach(function (e) { sec.appendChild(card(e)); });
+      box.appendChild(sec);
+    });
+  }
+
+  function card(e) {
+    var a = el('article', 'event');
+    var t = el('div', 'time');
+    var parts = (e.time || '').split(' ');
+    t.appendChild(el('b', null, parts[0] || 'TBA'));
+    if (parts[1]) t.appendChild(el('small', null, parts[1]));
+    a.appendChild(t);
+
+    var info = el('div', 'info');
+    info.appendChild(el('h4', null, e.name));
+    if (e.venue) info.appendChild(el('p', 'venue', e.venue));
+    var addr = [e.address, e.city].filter(Boolean).join(', ') + (e.zip ? ', ' + e.state + ' ' + e.zip : '');
+    if (e.organizer) addr += ' · Hosted by ' + e.organizer;
+    info.appendChild(el('p', 'addr', addr));
+    a.appendChild(info);
+
+    var act = el('div', 'actions');
+    if (e._mi != null) act.appendChild(el('span', 'dist-tag', (e._mi < 0.1 ? '< 0.1' : e._mi.toFixed(1)) + ' mi'));
+    if (e.price) act.appendChild(el('span', 'price' + (isFree(e.price) ? ' free' : ''), e.price));
+    if (/^https?:\/\//i.test(e.link || '')) {
+      var link = el('a', 'details', 'Details');
+      link.href = e.link; link.target = '_blank'; link.rel = 'noopener nofollow';
+      link.setAttribute('aria-label', 'Details for ' + e.name);
+      link.insertAdjacentHTML('beforeend', '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>');
+      act.appendChild(link);
+    }
+    a.appendChild(act);
+    return a;
+  }
+
+  // ---------- location ----------
+  function note(msg) { $('near-note').textContent = msg || ''; }
+
+  function loadZips() {
+    if (zips) return Promise.resolve(zips);
+    return fetch('data/tx-zips.json').then(function (r) { return r.json(); }).then(function (z) { zips = z; return z; });
+  }
+
+  function applyZip() {
+    var v = $('zip').value.trim();
+    if (!v) { state.origin = DOWNTOWN; note(''); return Promise.resolve(); }
+    if (!/^\d{5}$/.test(v)) { note('Please enter a 5-digit ZIP code.'); return Promise.resolve(); }
+    return loadZips().then(function (z) {
+      if (z[v]) { state.origin = { lat: z[v][0], lng: z[v][1], label: 'ZIP ' + v }; note(''); }
+      else { note('We couldn’t find ZIP ' + v + '. Showing events near downtown San Antonio.'); state.origin = DOWNTOWN; }
+    }).catch(function () { note('Couldn’t look up that ZIP right now.'); });
+  }
+
+  $('locate').addEventListener('click', function () {
+    if (!navigator.geolocation) { note('Your browser can’t share your location. Try a ZIP code instead.'); return; }
+    note('Finding your location…');
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      state.origin = { lat: pos.coords.latitude, lng: pos.coords.longitude, label: 'your location' };
+      $('zip').value = '';
+      note('');
+      render();
+    }, function () {
+      note('We couldn’t get your location. Try a ZIP code instead.');
+    }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 });
+  });
+
+  // ---------- controls ----------
+  $('search').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    state.query = $('q').value;
+    applyZip().then(render);
+    if (window.matchMedia('(max-width: 700px)').matches) $('results').scrollIntoView({ behavior: 'smooth' });
+  });
+  $('q').addEventListener('input', function () { state.query = this.value; render(); });
+  $('zip').addEventListener('change', function () { applyZip().then(render); });
+
+  function setWhen(w) {
+    state.when = w;
+    Array.prototype.forEach.call(document.querySelectorAll('.chip.when'), function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-when') === w));
+    });
+    document.querySelector('.date-chip').classList.toggle('on', w === 'pick');
+    if (w !== 'pick') $('pick').value = '';
+    render();
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.chip.when'), function (b) {
+    b.addEventListener('click', function () { setWhen(b.getAttribute('data-when')); });
+  });
+  $('pick').min = todayIso();
+  $('pick').addEventListener('change', function () {
+    state.picked = this.value;
+    setWhen(this.value ? 'pick' : 'today');
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.chip.dist'), function (b) {
+    b.addEventListener('click', function () {
+      state.radius = parseInt(b.getAttribute('data-mi'), 10);
+      Array.prototype.forEach.call(document.querySelectorAll('.chip.dist'), function (o) {
+        o.setAttribute('aria-pressed', String(o === b));
+      });
+      render();
+    });
+  });
+  $('free').addEventListener('change', function () { state.freeOnly = this.checked; render(); });
+
+  // ---------- data ----------
+  fetch('data/events.json', { cache: 'no-cache' })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (data) { events = data; render(); })
+    .catch(function () { $('summary').textContent = 'Events couldn’t load. Please refresh the page.'; });
+})();

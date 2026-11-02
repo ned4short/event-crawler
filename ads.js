@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  var SECONDS = 3; // time each advertiser image stays up
+  var SECONDS = 5; // time each advertiser image stays up
   var box = document.querySelector('[data-ads]');
   if (!box) return;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;

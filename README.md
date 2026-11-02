@@ -33,6 +33,6 @@ Columns (first row): Date, Time, Event Name, Venue Name, Address, City, State, Z
 
 ## Advertisers
 
-The slideshow below the footer on every page reads `data/advertisers.json`. Each entry has a `name`, an `image` (put the file in `ads/`, ideally 1200 × 400 pixels) and a `link`, which opens in a new tab. Slides change every 3 seconds (`SECONDS` at the top of `ads.js`) and pause while someone hovers or taps.
+The slideshow below the footer on every page reads `data/advertisers.json`. Each entry has a `name`, an `image` (put the file in `ads/`, ideally 1200 × 400 pixels) and a `link`, which opens in a new tab. Slides change every 5 seconds (`SECONDS` at the top of `ads.js`) and pause while someone hovers or taps.
 
 `advertise.html` emails advertiser requests (name, email, business name, website, image upload and description) with the subject "Event Crawler Advertiser Request" through the same FormSubmit alias. The image arrives as an email attachment.

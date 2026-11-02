@@ -218,9 +218,85 @@
   });
   $('free').addEventListener('change', function () { state.freeOnly = this.checked; render(); });
 
-  // ---------- data ----------
-  fetch('data/events.json', { cache: 'no-cache' })
-    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(function (data) { events = data; render(); })
-    .catch(function () { $('summary').textContent = 'Events couldn’t load. Please refresh the page.'; });
+  // ---------- data: read straight from the "Event Crawler" Google Sheet ----------
+  function parseCsv(text) {
+    var rows = [], row = [], field = '', i = 0, q = false, c;
+    text = text.replace(/^﻿/, '');
+    while (i < text.length) {
+      c = text[i];
+      if (q) {
+        if (c === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else q = false; }
+        else field += c;
+      } else if (c === '"') q = true;
+      else if (c === ',') { row.push(field); field = ''; }
+      else if (c === '\n' || c === '\r') {
+        if (c === '\r' && text[i + 1] === '\n') i++;
+        row.push(field); rows.push(row); row = []; field = '';
+      } else field += c;
+      i++;
+    }
+    if (field || row.length) { row.push(field); rows.push(row); }
+    return rows;
+  }
+
+  function normDate(v) {
+    v = (v || '').trim();
+    var m = /^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(v);
+    if (m) return m[1] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[3]).slice(-2);
+    m = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/.exec(v);
+    if (m) return (m[3].length === 2 ? '20' + m[3] : m[3]) + '-' + ('0' + m[1]).slice(-2) + '-' + ('0' + m[2]).slice(-2);
+    return '';
+  }
+
+  function normTime(v) {
+    v = (v || '').trim().toUpperCase().replace(/\./g, '');
+    var m = /^(\d{1,2})(?::(\d{2}))?(?::\d{2})?\s*([AP]M)?$/.exec(v);
+    if (!m) return v;
+    var h = parseInt(m[1], 10), mm = m[2] || '00', ap = m[3];
+    if (!ap) { ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12; }
+    return h + ':' + mm + ' ' + ap;
+  }
+
+  function toEvents(rows, zipTable, cityTable) {
+    var head = rows[0].map(function (h) { return h.trim().toLowerCase(); });
+    var idx = function (name) { return head.indexOf(name); };
+    var col = {
+      date: idx('date'), time: idx('time'), name: idx('event name'), venue: idx('venue name'),
+      address: idx('address'), city: idx('city'), state: idx('state'), zip: idx('zip code'),
+      organizer: idx('organizer name'), price: idx('price'), link: idx('link'),
+      lat: idx('latitude'), lng: idx('longitude')
+    };
+    var get = function (r, k) { return col[k] > -1 && r[col[k]] ? r[col[k]].trim() : ''; };
+    var seen = {}, out = [];
+    rows.slice(1).forEach(function (r) {
+      var e = {
+        date: normDate(get(r, 'date')), time: normTime(get(r, 'time')), name: get(r, 'name'),
+        venue: get(r, 'venue'), address: get(r, 'address'), city: get(r, 'city'),
+        state: get(r, 'state') || 'TX', zip: get(r, 'zip').slice(0, 5), organizer: get(r, 'organizer'),
+        price: get(r, 'price'), link: get(r, 'link')
+      };
+      if (!e.date || !e.name) return;
+      var key = e.date + '|' + e.time + '|' + e.name.toLowerCase();
+      if (seen[key]) return;
+      seen[key] = true;
+      var lat = parseFloat(get(r, 'lat')), lng = parseFloat(get(r, 'lng'));
+      if (!isNaN(lat) && !isNaN(lng)) { e.lat = lat; e.lng = lng; }
+      else if (zipTable[e.zip]) { e.lat = zipTable[e.zip][0]; e.lng = zipTable[e.zip][1]; }
+      else if (cityTable[e.city.toLowerCase()]) { var c = cityTable[e.city.toLowerCase()]; e.lat = c[0]; e.lng = c[1]; }
+      out.push(e);
+    });
+    return out;
+  }
+
+  var url = window.EVENT_SHEET_CSV + (window.EVENT_SHEET_CSV.indexOf('?') > -1 ? '&' : '?') + 't=' + Math.floor(Date.now() / 60000);
+  Promise.all([
+    fetch(url).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); }),
+    loadZips(),
+    fetch('data/tx-cities.json').then(function (r) { return r.json(); })
+  ]).then(function (res) {
+    events = toEvents(parseCsv(res[0]), res[1], res[2]);
+    render();
+  }).catch(function () {
+    $('summary').textContent = 'Events couldn’t load. Please refresh the page.';
+  });
 })();

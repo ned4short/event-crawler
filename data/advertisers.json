@@ -6,6 +6,12 @@
     "color": "blue"
   },
   {
+    "name": "Ned Air Filters",
+    "image": "ads/ned-air-filters.jpg",
+    "link": "https://www.nedairfilters.com",
+    "color": "yellow"
+  },
+  {
     "name": "Ned Web Services",
     "image": "ads/ned-web-services.jpg",
     "link": "https://nedwebservices.com/",

@@ -7,6 +7,7 @@
     yellow: { bg: '#FFC93C', fg: '#14213D' }
   };
   var COLOR_ORDER = ['blue', 'red', 'yellow'];
+  var WIDE_ENOUGH = 2.4; // width ÷ height at or above this counts as banner-shaped
   var box = document.querySelector('[data-ads]');
   if (!box) return;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -34,33 +35,43 @@
       link.target = '_blank';
       link.rel = 'noopener sponsored';
       link.setAttribute('aria-label', (a.name || 'Advertiser') + ' (opens in a new tab), ad ' + (i + 1) + ' of ' + ads.length);
-      var fit = a.fit === 'whole';
       var color = COLORS[a.color] || COLORS[COLOR_ORDER[i % COLOR_ORDER.length]];
-      link.className += fit ? ' ad-whole' : ' ad-cover';
       link.style.setProperty('--ad-bg', color.bg);
       link.style.setProperty('--ad-fg', color.fg);
       var img = document.createElement('img');
-      img.src = a.image;
       img.alt = a.name || 'Advertiser';
-      img.loading = i ? 'lazy' : 'eager';
+      img.loading = 'eager';
       link.appendChild(img);
-      if (a.showName !== false && a.name) {
-        var label = document.createElement('span');
-        label.className = 'ad-name';
-        label.textContent = a.name;
-        if (fit) {
-          var panel = document.createElement('span');
-          panel.className = 'ad-panel';
-          panel.appendChild(label);
-          var visit = document.createElement('span');
-          visit.className = 'ad-visit';
-          visit.textContent = 'Visit ' + a.link.replace(/^https?:\/\/(www\.)?/i, '').replace(/\/$/, '') + ' →';
-          panel.appendChild(visit);
-          link.appendChild(panel);
-        } else {
-          link.appendChild(label);
-        }
+      var site = a.link.replace(/^https?:\/\/(www\.)?/i, '').replace(/\/$/, '');
+      var layout = function (whole) {
+        link.classList.toggle('ad-whole', whole);
+        link.classList.toggle('ad-cover', !whole);
+        var old = link.querySelector('.ad-panel, .ad-label');
+        if (old) link.removeChild(old);
+        if (a.showName === false || !a.name) return;
+        var box = document.createElement('span');
+        box.className = whole ? 'ad-panel' : 'ad-label';
+        var n = document.createElement('span');
+        n.className = 'ad-name';
+        n.textContent = a.name;
+        var v = document.createElement('span');
+        v.className = 'ad-visit';
+        v.textContent = (whole ? 'Visit ' : '') + site + (whole ? ' →' : '');
+        box.appendChild(n);
+        box.appendChild(v);
+        link.appendChild(box);
+      };
+      // Banner-shaped images (about 3:1) fill the slide with a label on top;
+      // any other shape is shown whole beside a colored panel.
+      if (a.fit === 'whole') layout(true);
+      else if (a.fit === 'banner') layout(false);
+      else {
+        layout(true);
+        img.addEventListener('load', function () {
+          layout(img.naturalWidth / img.naturalHeight < WIDE_ENOUGH);
+        });
       }
+      img.src = a.image;
       track.appendChild(link);
     });
     viewport.appendChild(track);

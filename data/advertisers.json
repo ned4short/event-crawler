@@ -1,6 +1,26 @@
 [
-  { "name": "A Tea Party in a Box", "image": "ads/a-tea-party-in-a-box-full.jpg", "link": "https://ateapartyinabox.com", "fit": "whole", "color": "blue" },
-  { "name": "Ned Web Services", "image": "ads/ned-web-services.jpg", "link": "https://nedwebservices.com/", "showName": false },
-  { "name": "The Tea Blossom", "image": "ads/the-tea-blossom.jpg", "link": "https://ateapartyinabox.com/pages/the-tea-blossom", "showName": false },
-  { "name": "Advertise on Event Crawler", "image": "ads/your-ad-here.jpg", "link": "https://eventcrawler.nedwebservices.com/advertise.html", "showName": false }
+  {
+    "name": "A Tea Party in a Box",
+    "image": "ads/a-tea-party-in-a-box-full.jpg",
+    "link": "https://ateapartyinabox.com",
+    "color": "blue"
+  },
+  {
+    "name": "Ned Web Services",
+    "image": "ads/ned-web-services.jpg",
+    "link": "https://nedwebservices.com/",
+    "showName": false
+  },
+  {
+    "name": "The Tea Blossom",
+    "image": "ads/the-tea-blossom.jpg",
+    "link": "https://ateapartyinabox.com/pages/the-tea-blossom",
+    "showName": false
+  },
+  {
+    "name": "Advertise on Event Crawler",
+    "image": "ads/your-ad-here.jpg",
+    "link": "https://eventcrawler.nedwebservices.com/advertise.html",
+    "showName": false
+  }
 ]

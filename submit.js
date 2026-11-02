@@ -29,22 +29,33 @@
 
     if (f.website.value) { done(); return; } // spam bot filled the hidden field
 
-    if (!/^https:\/\/script\.google\.com\//.test(window.SUBMIT_URL || '')) {
-      return fail('Submissions aren’t open yet. Please try again soon.');
-    }
-
     btn.disabled = true;
     btn.textContent = 'Sending…';
     msg.className = 'form-msg';
     msg.textContent = '';
 
-    var body = new URLSearchParams({ name: name, email: email, link: link });
-    fetch(window.SUBMIT_URL, { method: 'POST', mode: 'no-cors', body: body })
-      .then(done)
+    fetch(window.SUBMIT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        'Submitter Name': name,
+        'Email': email,
+        'Event link': link,
+        _subject: 'Event Crawler Event Submission',
+        _replyto: email,
+        _template: 'table',
+        _captcha: 'false'
+      })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && (res.success === true || res.success === 'true')) done();
+        else throw new Error((res && res.message) || 'failed');
+      })
       .catch(function () {
         btn.disabled = false;
         btn.textContent = 'Submit my event';
-        fail('Something went wrong. Please check your connection and try again.');
+        fail('Something went wrong sending your event. Please try again in a moment.');
       });
   });
 

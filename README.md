@@ -29,4 +29,4 @@ Columns (first row): Date, Time, Event Name, Venue Name, Address, City, State, Z
 
 ## Event submissions
 
-`submit.html` posts each submission (name, email, event link) to a Google Apps Script web app, which adds a row to the **Event submissions** tab of the sheet. The script is in `tools/submissions-apps-script.gs`; its web app URL goes in the `SUBMIT_URL` line of `submit.html`.
+`submit.html` emails each submission (Submitter Name, Email, Event link) to nedu@nedairfilters.com with the subject "Event Crawler Event Submission", using FormSubmit (formsubmit.co, free, no account). The address is set in the `SUBMIT_URL` line of `submit.html`.

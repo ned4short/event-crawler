@@ -7,7 +7,7 @@ Live site: https://eventcrawler.nedwebservices.com
 ## How it works
 
 - `index.html`, `styles.css`, `app.js` – the site (plain HTML/CSS/JS, no build step).
-- `config.js` – the link to the **Event Crawler** Google Sheet, published to the web as CSV. The site reads the sheet directly every time it loads, so new rows show up on their own (Google refreshes the published copy within about 5 minutes).
+- The `EVENT_SHEET_CSV` line near the bottom of `index.html` – the link to the **Event Crawler** Google Sheet, published to the web as CSV. The site reads the sheet directly every time it loads, so new rows show up on their own (Google refreshes the published copy within about 5 minutes). When you change `app.js` or `styles.css`, bump the `?v=` number in `index.html` so browsers load the new file.
 - `data/tx-zips.json`, `data/tx-cities.json` – Texas ZIP code and city locations, used for the distance filter. Rebuild with `tools/build_locations.py` when adding new states.
 - Distances are measured from the visitor's ZIP code or location (or downtown San Antonio by default) to each event's ZIP code (or city, if the ZIP is blank).
 

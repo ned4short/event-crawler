@@ -93,7 +93,21 @@
     pause.type = 'button';
     pause.className = 'ads-pause';
     pause.addEventListener('click', function () { paused = !paused; update(); restart(); });
-    if (ads.length > 1) { controls.appendChild(pause); box.appendChild(controls); }
+    function arrow(dir) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'ads-arrow';
+      b.setAttribute('aria-label', dir < 0 ? 'Previous ad' : 'Next ad');
+      b.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + (dir < 0 ? 'M15 6l-6 6 6 6' : 'M9 6l6 6-6 6') + '"/></svg>';
+      b.addEventListener('click', function () { go(current + dir); restart(); });
+      return b;
+    }
+    if (ads.length > 1) {
+      controls.appendChild(arrow(-1));
+      controls.appendChild(pause);
+      controls.appendChild(arrow(1));
+      box.appendChild(controls);
+    }
 
     function go(i) {
       current = (i + ads.length) % ads.length;

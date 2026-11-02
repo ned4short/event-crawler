@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="styles.css?v=13">
+<link rel="stylesheet" href="styles.css?v=14">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"Event Crawler","url":"https://eventcrawler.nedwebservices.com/","description":"Search local events in San Antonio by date and distance.","publisher":{"@type":"Organization","name":"Ned Web Services","url":"https://nedwebservices.com"}}
 </script>
@@ -72,9 +72,17 @@
             <button type="button" class="chip when" data-when="today" aria-pressed="true">Today</button>
             <button type="button" class="chip when" data-when="tomorrow" aria-pressed="false">Tomorrow</button>
             <button type="button" class="chip when" data-when="weekend" aria-pressed="false">This weekend</button>
-            <label class="chip date-chip">Pick a date
-              <input type="date" id="pick">
-            </label>
+            <span class="day-nav">
+              <button type="button" class="arrow-btn" id="prev-day" aria-label="Previous day">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+              </button>
+              <label class="chip date-chip"><span class="pick-label">Pick a date</span>
+                <input type="date" id="pick" aria-label="Pick a date">
+              </label>
+              <button type="button" class="arrow-btn" id="next-day" aria-label="Next day">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+              </button>
+            </span>
           </div>
         </div>
         <div class="filter-group">
@@ -97,9 +105,6 @@
         <h2 id="heading">Today</h2>
         <p id="summary" class="muted">Loading events…</p>
       </div>
-      <label class="free-toggle">
-        <input type="checkbox" id="free"> Free events only
-      </label>
     </div>
     <div id="list" aria-live="polite"></div>
   </main>
@@ -126,7 +131,7 @@
 // (Google Sheets: File > Share > Publish to web > Sheet1 > Comma-separated values).
 window.EVENT_SHEET_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSh94qFcl6AXZBlNRhhlLiDyJpyYA4_oqdyIBvnuGmy6kfiIjeO6XCfll9ETfu-9anR6Y-tsipBt7GO/pub?output=csv';
 </script>
-<script src="app.js?v=8"></script>
-<script src="ads.js?v=12"></script>
+<script src="app.js?v=14"></script>
+<script src="ads.js?v=14"></script>
 </body>
 </html>

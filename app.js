@@ -7,7 +7,7 @@
   var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
   var state = {
-    when: 'today', picked: '', radius: 20, freeOnly: false, query: '',
+    when: 'today', picked: '', radius: 20, query: '',
     origin: DOWNTOWN
   };
   var events = [];
@@ -68,7 +68,6 @@
     var q = state.query.trim().toLowerCase();
     var list = events.filter(function (e) {
       if (e.date < range.from || e.date > range.to) return false;
-      if (state.freeOnly && !isFree(e.price)) return false;
       if (q && (e.name + ' ' + e.venue + ' ' + e.city).toLowerCase().indexOf(q) === -1) return false;
       e._mi = (e.lat != null) ? miles(state.origin, e) : null;
       if (e._mi != null && e._mi > state.radius) return false;
@@ -190,23 +189,55 @@
   $('q').addEventListener('input', function () { state.query = this.value; render(); });
   $('zip').addEventListener('change', function () { applyZip().then(render); });
 
+  // The single day being viewed (blank for "This weekend").
+  function viewedDay() {
+    var t = todayIso();
+    if (state.when === 'today') return t;
+    if (state.when === 'tomorrow') return addDays(t, 1);
+    if (state.when === 'pick' && state.picked) return state.picked;
+    return '';
+  }
+
   function setWhen(w) {
     state.when = w;
     Array.prototype.forEach.call(document.querySelectorAll('.chip.when'), function (b) {
       b.setAttribute('aria-pressed', String(b.getAttribute('data-when') === w));
     });
     document.querySelector('.date-chip').classList.toggle('on', w === 'pick');
-    if (w !== 'pick') $('pick').value = '';
+    var day = viewedDay();
+    $('pick').value = day;
+    $('prev-day').disabled = !!day && day <= todayIso();
     render();
   }
+
+  // Jump to a specific day; Today/Tomorrow light up when they match.
+  function goToDay(iso) {
+    var t = todayIso();
+    if (iso < t) iso = t;
+    if (iso === t) { state.picked = ''; setWhen('today'); }
+    else if (iso === addDays(t, 1)) { state.picked = ''; setWhen('tomorrow'); }
+    else { state.picked = iso; setWhen('pick'); }
+  }
+
   Array.prototype.forEach.call(document.querySelectorAll('.chip.when'), function (b) {
-    b.addEventListener('click', function () { setWhen(b.getAttribute('data-when')); });
+    b.addEventListener('click', function () { state.picked = ''; setWhen(b.getAttribute('data-when')); });
   });
   $('pick').min = todayIso();
   $('pick').addEventListener('change', function () {
-    state.picked = this.value;
-    setWhen(this.value ? 'pick' : 'today');
+    if (this.value) goToDay(this.value); else goToDay(todayIso());
   });
+
+  function step(n) {
+    var day = viewedDay();
+    if (!day) { // from "This weekend": back to Friday, forward to Monday
+      var r = dateRange();
+      day = n < 0 ? addDays(r.from, 0) : addDays(r.to, 0);
+    }
+    goToDay(addDays(day, n));
+  }
+  $('prev-day').addEventListener('click', function () { step(-1); });
+  $('next-day').addEventListener('click', function () { step(1); });
+  setWhen('today');
 
   Array.prototype.forEach.call(document.querySelectorAll('.chip.dist'), function (b) {
     b.addEventListener('click', function () {
@@ -217,7 +248,6 @@
       render();
     });
   });
-  $('free').addEventListener('change', function () { state.freeOnly = this.checked; render(); });
 
   // ---------- data: read straight from the "Event Crawler" Google Sheet ----------
   function parseCsv(text) {

@@ -1,6 +1,12 @@
 (function () {
   'use strict';
   var SECONDS = 5; // time each advertiser image stays up
+  var COLORS = {
+    red: { bg: '#D62839', fg: '#FFFFFF' },
+    blue: { bg: '#1F4FBF', fg: '#FFFFFF' },
+    yellow: { bg: '#FFC93C', fg: '#14213D' }
+  };
+  var COLOR_ORDER = ['blue', 'red', 'yellow'];
   var box = document.querySelector('[data-ads]');
   if (!box) return;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -28,12 +34,33 @@
       link.target = '_blank';
       link.rel = 'noopener sponsored';
       link.setAttribute('aria-label', (a.name || 'Advertiser') + ' (opens in a new tab), ad ' + (i + 1) + ' of ' + ads.length);
+      var fit = a.fit === 'whole';
+      var color = COLORS[a.color] || COLORS[COLOR_ORDER[i % COLOR_ORDER.length]];
+      link.className += fit ? ' ad-whole' : ' ad-cover';
+      link.style.setProperty('--ad-bg', color.bg);
+      link.style.setProperty('--ad-fg', color.fg);
       var img = document.createElement('img');
       img.src = a.image;
       img.alt = a.name || 'Advertiser';
       img.loading = i ? 'lazy' : 'eager';
-      img.width = 1200; img.height = 400;
       link.appendChild(img);
+      if (a.showName !== false && a.name) {
+        var label = document.createElement('span');
+        label.className = 'ad-name';
+        label.textContent = a.name;
+        if (fit) {
+          var panel = document.createElement('span');
+          panel.className = 'ad-panel';
+          panel.appendChild(label);
+          var visit = document.createElement('span');
+          visit.className = 'ad-visit';
+          visit.textContent = 'Visit ' + a.link.replace(/^https?:\/\/(www\.)?/i, '').replace(/\/$/, '') + ' →';
+          panel.appendChild(visit);
+          link.appendChild(panel);
+        } else {
+          link.appendChild(label);
+        }
+      }
       track.appendChild(link);
     });
     viewport.appendChild(track);

@@ -152,7 +152,7 @@ button, input { font: inherit; color: inherit; }
 }
 
 /* Advertisers slideshow (below the footer) */
-.ads { padding-top: 8px; padding-bottom: 48px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+.ads { border-top: 3px solid var(--blue); padding-top: 28px; padding-bottom: 48px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
 .ads h2 { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
 .ads-carousel { width: 100%; max-width: 900px; }
 .ads-viewport { width: 100%; overflow: hidden; border-radius: 16px; border: 2px solid var(--ink); background: #F1F3F8; }
@@ -173,7 +173,6 @@ button, input { font: inherit; color: inherit; }
 .ads-dot[aria-current="true"]::after { background: var(--red); }
 .ads-pause { margin-left: 8px; height: 32px; padding: 0 12px; border: 1.5px solid var(--field); border-radius: 999px; background: #fff; font-size: 13px; font-weight: 600; cursor: pointer; }
 .ads .cta-btn { margin-top: 8px; }
-.site-footer + .ads { border-top: none; }
 
 /* Textarea and file fields */
 .field textarea { min-height: 110px; width: 100%; border: 2px solid var(--field); border-radius: 12px; padding: 12px 16px; font-size: 17px; font-weight: 400; background: #fff; resize: vertical; }

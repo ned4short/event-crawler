@@ -5,7 +5,7 @@
   if (!box) return;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  fetch('data/advertisers.json?v=' + Math.floor(Date.now() / 600000))
+  fetch('data/advertisers.json', { cache: 'no-cache' })
     .then(function (r) { return r.json(); })
     .then(function (ads) {
       ads = (ads || []).filter(function (a) { return a && a.image && /^https?:\/\//i.test(a.link || ''); });

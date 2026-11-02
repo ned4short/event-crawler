@@ -99,8 +99,26 @@ button, input { font: inherit; color: inherit; }
 .empty .big { font-size: 20px; font-weight: 700; }
 .empty .muted { font-size: 16px; max-width: 440px; }
 
-.site-footer { margin-top: 24px; padding-top: 28px; padding-bottom: 40px; border-top: 3px solid var(--red); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--muted); }
+.site-footer { margin-top: 24px; padding-top: 28px; padding-bottom: 40px; border-top: 3px solid var(--red); display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; font-size: 14px; line-height: 1.6; color: var(--muted); }
 .site-footer p { margin: 0; max-width: 560px; }
+
+/* Submit-my-event button */
+.submit-cta { display: flex; justify-content: center; padding-top: 24px; padding-bottom: 32px; }
+.cta-btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; padding: 0 32px; box-shadow: 5px 5px 0 var(--yellow); }
+
+/* Submit page */
+.submit-page { padding-top: 32px; padding-bottom: 48px; }
+.submit-page h1 { margin: 0; font-size: clamp(34px, 5vw, 52px); line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; }
+.submit-page .intro { margin: 14px 0 0; font-size: 18px; line-height: 1.5; color: var(--muted); max-width: 620px; }
+.submit-form { margin-top: 28px; max-width: 620px; border: 2px solid var(--ink); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 18px; box-shadow: 8px 8px 0 var(--yellow); background: #fff; }
+.notice { margin: 0; padding: 14px 16px; border-radius: 12px; background: #FFF6DB; border: 2px solid var(--yellow); font-size: 15px; line-height: 1.5; font-weight: 500; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.form-msg { margin: 0; font-size: 15px; font-weight: 600; }
+.form-msg.error { color: var(--red); }
+.thanks { margin-top: 28px; max-width: 620px; border: 2px solid var(--ink); border-radius: 20px; padding: 32px 24px; box-shadow: 8px 8px 0 var(--yellow); }
+.thanks h2 { margin: 0 0 8px; font-size: 26px; }
+.thanks p { margin: 0 0 18px; color: var(--muted); font-size: 17px; line-height: 1.5; }
+.back { display: inline-block; margin-top: 18px; font-weight: 600; }
 .site-footer a { font-weight: 600; }
 
 @media (max-width: 520px) {

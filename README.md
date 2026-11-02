@@ -26,3 +26,7 @@ Columns (first row): Date, Time, Event Name, Venue Name, Address, City, State, Z
 - DNS: a `CNAME` record for `eventcrawler` on nedwebservices.com pointing to `ned4short.github.io`.
 
 © 2026 Ned Web Services. All rights reserved.
+
+## Event submissions
+
+`submit.html` posts each submission (name, email, event link) to a Google Apps Script web app, which adds a row to the **Event submissions** tab of the sheet. The script is in `tools/submissions-apps-script.gs`; its web app URL goes in the `SUBMIT_URL` line of `submit.html`.

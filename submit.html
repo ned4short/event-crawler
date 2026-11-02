@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Submit Your Event – Event Crawler San Antonio</title>
+<meta name="description" content="Hosting an event in San Antonio? Send us the link and we'll add it to Event Crawler.">
+<link rel="canonical" href="https://eventcrawler.nedwebservices.com/submit.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Submit your event to Event Crawler">
+<meta property="og:description" content="Hosting an event in San Antonio? Send us the link and we'll add it to Event Crawler.">
+<meta property="og:url" content="https://eventcrawler.nedwebservices.com/submit.html">
+<meta property="og:image" content="https://eventcrawler.nedwebservices.com/og-image.png">
+<meta name="theme-color" content="#D62839">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="styles.css?v=5">
+</head>
+<body>
+<div class="page">
+
+  <header class="site-header wrap">
+    <a href="./" class="logo">
+      <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" fill="#D62839"/>
+        <rect x="24" y="2" width="18" height="18" rx="2" fill="#1F4FBF"/>
+        <path d="M2 42 L22 24 L22 42 Z" fill="#FFC93C"/>
+        <rect x="24" y="24" width="18" height="18" rx="9" fill="none" stroke="#14213D" stroke-width="3"/>
+      </svg>
+      <span>Event Crawler</span>
+    </a>
+    <div class="city-pill">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D62839" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+      <span>San Antonio, TX</span>
+      <span class="muted">· more cities soon</span>
+    </div>
+  </header>
+
+  <main class="wrap submit-page">
+    <h1>Submit your event<span class="red">.</span></h1>
+    <p class="intro">Hosting something in the San Antonio area? Send us the link and we’ll add it to Event Crawler.</p>
+
+    <form class="submit-form" id="submit-form" novalidate>
+      <p class="notice">Please ensure that your event link has all the relevant info: date, time, venue name, address, and price.</p>
+
+      <label class="field">Submitter Name
+        <input type="text" name="name" id="name" autocomplete="name" required maxlength="120">
+      </label>
+      <label class="field">Email
+        <input type="email" name="email" id="email" autocomplete="email" required maxlength="200">
+      </label>
+      <label class="field">Event link
+        <input type="url" name="link" id="link" placeholder="https://" required maxlength="1000">
+      </label>
+      <label class="hp" aria-hidden="true">Leave this empty
+        <input type="text" name="website" tabindex="-1" autocomplete="off">
+      </label>
+
+      <p class="form-msg" id="form-msg" aria-live="polite"></p>
+      <button type="submit" class="primary" id="send">Submit my event</button>
+    </form>
+
+    <div class="thanks" id="thanks" hidden>
+      <h2>Thanks! Your event is in<span class="red">.</span></h2>
+      <p>We’ll review the link and add it to Event Crawler if it’s a public event in the area.</p>
+      <a href="./" class="primary cta-btn">Back to events</a>
+      <br><a href="submit.html" class="back" id="another">Submit another event</a>
+    </div>
+
+    <a href="./" class="back">← Back to events</a>
+  </main>
+
+  <footer class="wrap site-footer">
+    <p>Event Crawler is brought to you by:<br>
+      <a href="https://nedwebservices.com/">Ned Web Services</a> &amp; <a href="https://ateapartyinabox.com/pages/the-tea-blossom">The Tea Blossom</a><br>
+      2026</p>
+  </footer>
+</div>
+<script>
+// Google Apps Script web app that adds each submission to the "Event submissions" tab.
+window.SUBMIT_URL = 'PASTE_APPS_SCRIPT_URL_HERE';
+</script>
+<script src="submit.js?v=5"></script>
+</body>
+</html>

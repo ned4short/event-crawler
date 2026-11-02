@@ -129,9 +129,10 @@
     var info = el('div', 'info');
     info.appendChild(el('h4', null, e.name));
     if (e.venue) info.appendChild(el('p', 'venue', e.venue));
-    var addr = [e.address, e.city].filter(Boolean).join(', ') + (e.zip ? ', ' + e.state + ' ' + e.zip : '');
-    if (e.organizer) addr += ' · Hosted by ' + e.organizer;
-    info.appendChild(el('p', 'addr', addr));
+    var ap = el('p', 'addr', [e.address, e.city].filter(Boolean).join(', '));
+    if (e.zip) ap.appendChild(el('span', 'zip', ', ' + e.state + ' ' + e.zip));
+    if (e.organizer) ap.appendChild(el('span', 'org', ' · Hosted by ' + e.organizer));
+    info.appendChild(ap);
     a.appendChild(info);
 
     var act = el('div', 'actions');

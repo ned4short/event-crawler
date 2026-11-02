@@ -36,6 +36,16 @@
       var from = dow === 0 ? t : sat, to = addDays(sat, 1);
       return { from: from, to: to, title: 'This weekend · ' + shortDate(sat) + ' – ' + shortDate(to), multi: true };
     }
+    if (state.when === 'week') {
+      var dw = toDate(t).getUTCDay();
+      var sun = dw === 0 ? t : addDays(t, 7 - dw);
+      return { from: t, to: sun, title: 'This week · ' + shortDate(t) + ' – ' + shortDate(sun), multi: true };
+    }
+    if (state.when === 'month') {
+      var d = toDate(t);
+      var last = toIso(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)));
+      return { from: t, to: last, title: 'This month · ' + shortDate(t) + ' – ' + shortDate(last), multi: true };
+    }
     if (state.when === 'pick' && state.picked) { return { from: state.picked, to: state.picked, title: longDate(state.picked) }; }
     return { from: t, to: t, title: 'Today · ' + longDate(t) };
   }
@@ -189,7 +199,7 @@
   $('q').addEventListener('input', function () { state.query = this.value; render(); });
   $('zip').addEventListener('change', function () { applyZip().then(render); });
 
-  // The single day being viewed (blank for "This weekend").
+  // The single day being viewed (blank for multi-day ranges).
   function viewedDay() {
     var t = todayIso();
     if (state.when === 'today') return t;
@@ -204,9 +214,8 @@
       b.setAttribute('aria-pressed', String(b.getAttribute('data-when') === w));
     });
     document.querySelector('.date-chip').classList.toggle('on', w === 'pick');
-    var day = viewedDay();
-    $('pick').value = day;
-    $('prev-day').disabled = !!day && day <= todayIso();
+    $('pick').value = viewedDay();
+    $('prev-day').disabled = dateRange().from <= todayIso();
     render();
   }
 
@@ -229,9 +238,9 @@
 
   function step(n) {
     var day = viewedDay();
-    if (!day) { // from "This weekend": back to Friday, forward to Monday
+    if (!day) { // from a multi-day range: back to the day before it, forward to the day after
       var r = dateRange();
-      day = n < 0 ? addDays(r.from, 0) : addDays(r.to, 0);
+      day = n < 0 ? r.from : r.to;
     }
     goToDay(addDays(day, n));
   }

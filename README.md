@@ -40,3 +40,7 @@ The advertiser slideshow below the footer comes from the shared Ned Ads widget (
 - `manifest.webmanifest`, `icons/` and `sw.js` make the site installable on supported phones and computers (Chrome, Edge, Samsung Internet; iPhone/iPad via Share → Add to Home Screen).
 - `install.js` shows a small banner in the red strip at the top: **Install** where the browser offers it, **Open app** when the app is already installed, and Add-to-Home-Screen tips on iPhone/iPad. The X hides it for 30 days; it never shows inside the installed app.
 - `sw.js` keeps the last copy of the events sheet, so the app still shows events on a weak or offline connection. When changing cached files, bump `VERSION` and the `?v=` numbers listed in it.
+
+## Starred events
+
+Each event has a star. Starred events are saved on the visitor's own device (browser storage, no account) and appear in a "Your starred events" section right below the search box, sorted by date and time. Past events drop off automatically. Starring doesn't move the page, and a short message confirms each star.

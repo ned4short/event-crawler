@@ -74,6 +74,7 @@
   }
 
   function render() {
+    renderStarred();
     var range = dateRange();
     var q = state.query.trim().toLowerCase();
     var list = events.filter(function (e) {
@@ -127,6 +128,108 @@
     });
   }
 
+  // ---------- starred events (saved on this device) ----------
+  var STAR_KEY = 'ec_starred_v1';
+  var STAR_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8l2.8 5.7 6.3.9-4.6 4.4 1.1 6.2L12 17.1 6.4 20l1.1-6.2L2.9 9.4l6.3-.9z"/></svg>';
+  var STAR_FIELDS = ['date', 'time', 'name', 'venue', 'address', 'city', 'state', 'zip', 'organizer', 'price', 'link', 'lat', 'lng'];
+
+  function starKey(e) { return e.date + '|' + e.time + '|' + (e.name || '').toLowerCase(); }
+  function loadStars() {
+    try { return JSON.parse(localStorage.getItem(STAR_KEY) || '{}') || {}; } catch (x) { return {}; }
+  }
+  function saveStars(st) { try { localStorage.setItem(STAR_KEY, JSON.stringify(st)); } catch (x) {} }
+  var stars = loadStars();
+
+  function starButton(e) {
+    var key = starKey(e);
+    var b = el('button', 'star-btn');
+    b.type = 'button';
+    b.setAttribute('data-star', key);
+    b.innerHTML = STAR_SVG;
+    setStarState(b, !!stars[key], e.name);
+    b.addEventListener('click', function () { toggleStar(e, b); });
+    return b;
+  }
+  function setStarState(b, on, name) {
+    b.setAttribute('aria-pressed', String(on));
+    b.setAttribute('aria-label', (on ? 'Remove star from ' : 'Star ') + name);
+    b.title = on ? 'Starred: tap to remove' : 'Star this event to find it again later';
+  }
+
+  function toggleStar(e, btn) {
+    var key = starKey(e);
+    var section = $('starred');
+    var inSection = section.contains(btn);
+    var before = btn.getBoundingClientRect().top;
+    var on = !stars[key];
+    if (on) {
+      var snap = {};
+      STAR_FIELDS.forEach(function (f) { if (e[f] != null && e[f] !== '') snap[f] = e[f]; });
+      stars[key] = snap;
+    } else {
+      delete stars[key];
+    }
+    saveStars(stars);
+    Array.prototype.forEach.call(document.querySelectorAll('[data-star]'), function (b) {
+      if (b.getAttribute('data-star') === key) setStarState(b, on, e.name);
+    });
+    renderStarred();
+    // Keep the tapped event in the same spot on screen when the starred list above grows or shrinks.
+    if (!inSection) {
+      var shift = btn.getBoundingClientRect().top - before;
+      if (shift) window.scrollBy(0, shift);
+    }
+    toast(on ? 'Starred. It’ll be waiting at the top of the page.' : 'Removed from your starred events.');
+  }
+
+  function renderStarred() {
+    var section = $('starred');
+    var t = todayIso();
+    var byKey = {};
+    events.forEach(function (ev) { byKey[starKey(ev)] = ev; });
+    var changed = false;
+    var list = Object.keys(stars).map(function (k) {
+      var s = stars[k];
+      if (!s || !s.date || s.date < t) { delete stars[k]; changed = true; return null; }
+      return byKey[k] || s;
+    }).filter(Boolean);
+    if (changed) saveStars(stars);
+
+    section.textContent = '';
+    if (!list.length) { section.hidden = true; return; }
+    list.forEach(function (e) { e._mi = e.lat != null ? miles(state.origin, e) : null; });
+    list.sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : minutes(a.time) - minutes(b.time); });
+
+    var head = el('div', 'starred-head');
+    var h = el('h2');
+    h.id = 'starred-title';
+    h.innerHTML = STAR_SVG;
+    h.appendChild(document.createTextNode('Your starred events'));
+    head.appendChild(h);
+    head.appendChild(el('span', 'starred-count', list.length + (list.length === 1 ? ' event' : ' events')));
+    section.appendChild(head);
+
+    var lastDate = null;
+    list.forEach(function (e) {
+      if (e.date !== lastDate) {
+        lastDate = e.date;
+        var label = e.date === t ? 'Today · ' + longDate(e.date) : e.date === addDays(t, 1) ? 'Tomorrow · ' + longDate(e.date) : longDate(e.date);
+        section.appendChild(el('h3', 'starred-day', label));
+      }
+      section.appendChild(card(e));
+    });
+    section.hidden = false;
+  }
+
+  var toastTimer = null;
+  function toast(msg) {
+    var n = $('toast');
+    n.textContent = msg;
+    n.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { n.classList.remove('show'); }, 2600);
+  }
+
   function card(e) {
     var a = el('article', 'event');
     var t = el('div', 'time');
@@ -154,6 +257,7 @@
       link.insertAdjacentHTML('beforeend', '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>');
       act.appendChild(link);
     }
+    act.appendChild(starButton(e));
     a.appendChild(act);
     return a;
   }

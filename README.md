@@ -33,6 +33,4 @@ Columns (first row): Date, Time, Event Name, Venue Name, Address, City, State, Z
 
 ## Advertisers
 
-The slideshow below the footer on every page reads `data/advertisers.json`. Each entry has a `name`, an `image` (put the file in `ads/`) and a `link`, which opens in a new tab. The layout is automatic: an image that is already banner-shaped (about 3 times wider than tall) fills the slide as-is, with no label; any other image is shown whole beside a red, blue or yellow panel with the name and a "Visit …" link. Optional: `"color"` (`red`, `blue` or `yellow`) picks the panel color; `"fit": "whole"` or `"fit": "banner"` forces a layout. Slides change every 5 seconds (`SECONDS` at the top of `ads.js`) and pause while someone hovers or taps.
-
-`advertise.html` emails advertiser requests (name, email, business name, website, image upload and description) with the subject "Event Crawler Advertiser Request" through the same FormSubmit alias. The image arrives as an email attachment.
+The advertiser slideshow below the footer comes from the shared Ned Ads widget (https://ads.nedwebservices.com, repo `ned4short/ned-ads`), so ads are managed in one place for every site. `advertise.html` forwards to the shared advertiser form there.

@@ -1,14 +1,14 @@
 [
   {
     "name": "A Tea Party in a Box",
-    "image": "ads/a-tea-party-in-a-box-full.jpg",
-    "link": "https://ateapartyinabox.com",
-    "color": "blue"
+    "image": "ads/a-tea-party-in-a-box-banner.jpg",
+    "link": "https://ateapartyinabox.com"
   },
   {
     "name": "Ned Air Filters",
     "image": "ads/ned-air-filters-banner.jpg",
-    "link": "https://www.nedairfilters.com"
+    "link": "https://www.nedairfilters.com",
+    "showName": false
   },
   {
     "name": "Ned Web Services",

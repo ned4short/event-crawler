@@ -7,25 +7,21 @@
   {
     "name": "Ned Air Filters",
     "image": "ads/ned-air-filters-banner.jpg",
-    "link": "https://www.nedairfilters.com",
-    "showName": false
+    "link": "https://www.nedairfilters.com"
   },
   {
     "name": "Ned Web Services",
     "image": "ads/ned-web-services.jpg",
-    "link": "https://nedwebservices.com/",
-    "showName": false
+    "link": "https://nedwebservices.com/"
   },
   {
     "name": "The Tea Blossom",
     "image": "ads/the-tea-blossom.jpg",
-    "link": "https://ateapartyinabox.com/pages/the-tea-blossom",
-    "showName": false
+    "link": "https://ateapartyinabox.com/pages/the-tea-blossom"
   },
   {
     "name": "Advertise on Event Crawler",
     "image": "ads/your-ad-here.jpg",
-    "link": "https://eventcrawler.nedwebservices.com/advertise.html",
-    "showName": false
+    "link": "https://eventcrawler.nedwebservices.com/advertise.html"
   }
 ]

@@ -48,7 +48,7 @@
         link.classList.toggle('ad-cover', !whole);
         var old = link.querySelector('.ad-panel, .ad-label');
         if (old) link.removeChild(old);
-        if (a.showName === false || !a.name) return;
+        if (!whole || a.showName === false || !a.name) return; // banner-shaped images show as-is, no label
         var box = document.createElement('span');
         box.className = whole ? 'ad-panel' : 'ad-label';
         var n = document.createElement('span');
@@ -61,8 +61,8 @@
         box.appendChild(v);
         link.appendChild(box);
       };
-      // Banner-shaped images (about 3:1) fill the slide with a label on top;
-      // any other shape is shown whole beside a colored panel.
+      // Banner-shaped images (about 3:1) fill the slide as-is;
+      // any other shape is shown whole beside a colored panel with the name and link.
       if (a.fit === 'whole') layout(true);
       else if (a.fit === 'banner') layout(false);
       else {

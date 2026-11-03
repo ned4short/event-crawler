@@ -34,3 +34,9 @@ Columns (first row): Date, Time, Event Name, Venue Name, Address, City, State, Z
 ## Advertisers
 
 The advertiser slideshow below the footer comes from the shared Ned Ads widget (https://ads.nedwebservices.com, repo `ned4short/ned-ads`), so ads are managed in one place for every site. `advertise.html` forwards to the shared advertiser form there.
+
+## Installable app (PWA)
+
+- `manifest.webmanifest`, `icons/` and `sw.js` make the site installable on supported phones and computers (Chrome, Edge, Samsung Internet; iPhone/iPad via Share → Add to Home Screen).
+- `install.js` shows a small banner in the red strip at the top: **Install** where the browser offers it, **Open app** when the app is already installed, and Add-to-Home-Screen tips on iPhone/iPad. The X hides it for 30 days; it never shows inside the installed app.
+- `sw.js` keeps the last copy of the events sheet, so the app still shows events on a weak or offline connection. When changing cached files, bump `VERSION` and the `?v=` numbers listed in it.

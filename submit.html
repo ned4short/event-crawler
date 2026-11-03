@@ -13,14 +13,29 @@
 <meta property="og:image" content="https://eventcrawler.nedwebservices.com/og-image.png">
 <meta name="theme-color" content="#D62839">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Event Crawler">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="styles.css?v=17">
+<link rel="stylesheet" href="styles.css?v=18">
 <script async src="https://nedtraffic.replit.app/api/tracker.js" data-site="a8246930-a60e-48ba-88ff-d61d34606d0d"></script>
 </head>
 <body>
 <div class="page">
+  <div class="app-bar" id="app-bar" role="region" aria-label="Event Crawler app" hidden>
+    <div class="wrap app-bar-inner">
+      <svg class="app-bar-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18h2"/></svg>
+      <p id="app-bar-text"></p>
+      <button type="button" class="app-bar-btn" id="app-bar-action" hidden></button>
+      <button type="button" class="app-bar-close" id="app-bar-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+  </div>
 
   <header class="site-header wrap">
     <a href="./" class="logo">
@@ -87,5 +102,6 @@
 window.SUBMIT_URL = 'https://formsubmit.co/ajax/ccbf3546334c2a96b18bf5f360c965fb';
 </script>
 <script src="submit.js?v=8"></script>
+<script src="install.js?v=1"></script>
 </body>
 </html>

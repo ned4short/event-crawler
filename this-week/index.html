@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="styles.css?v=20">
+<link rel="stylesheet" href="styles.css?v=21">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"Event Crawler","url":"https://eventcrawler.nedwebservices.com/","description":"Search local events in San Antonio by date and distance.","publisher":{"@type":"Organization","name":"Ned Web Services","url":"https://nedwebservices.com"}}
 </script>
@@ -73,7 +73,8 @@
         </label>
         <label class="field grow1">Near
           <span class="near">
-            <input type="text" id="zip" inputmode="numeric" maxlength="5" placeholder="ZIP code" autocomplete="postal-code">
+            <input type="text" id="zip" list="near-cities" maxlength="60" placeholder="ZIP code or city" autocomplete="off" aria-describedby="near-note">
+            <datalist id="near-cities"></datalist>
             <button type="button" id="locate" class="icon-btn" aria-label="Use my location" title="Use my location">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
             </button>
@@ -208,7 +209,7 @@
 <article class="event"><div class="time"><b>10:00</b><small>AM</small></div><div class="info"><h4>Storytime Flow at McNay Museum</h4><p class="venue">McNay Art Museum</p><p class="addr">6000 N New Braunfels Ave, San Antonio<span class="zip">, TX 78209</span></p></div><div class="actions"><span class="dist-tag">4.6 mi</span><a class="details" href="https://movetosanantoniotx.com/events" target="_blank" rel="noopener nofollow" aria-label="Details for Storytime Flow at McNay Museum">Details<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article>
 <article class="event"><div class="time"><b>11:00</b><small>AM</small></div><div class="info"><h4>Carver Youth Matinee: Opera SA Presents Opera a la carte</h4><p class="venue">Carver Community Cultural Center</p><p class="addr">226 North Hackberry Street, San Antonio<span class="zip">, TX 78202</span></p></div><div class="actions"><span class="dist-tag">2.0 mi</span><span class="price">From $55</span><a class="details" href="https://www.facebook.com/events/4528157084067197/" target="_blank" rel="noopener nofollow" aria-label="Details for Carver Youth Matinee: Opera SA Presents Opera a la carte">Details<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article>
 <article class="event"><div class="time"><b>4:00</b><small>PM</small></div><div class="info"><h4>San Antonio G❤N Show</h4><p class="venue">San Antonio Shriner Auditorium</p><p class="addr">901 N TX-1604-LOOP W, San Antonio<span class="zip">, TX 78232</span></p></div><div class="actions"><span class="dist-tag">11.3 mi</span><a class="details" href="http://bar3oak.com/events" target="_blank" rel="noopener nofollow" aria-label="Details for San Antonio G❤N Show">Details<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article>
-<article class="event"><div class="time"><b>5:00</b><small>PM</small></div><div class="info"><h4>Hawkins Forever - A Stranger Things Day &amp; More Celebration</h4><p class="venue">Wonderland of the Americas</p><p class="addr">4522 Fredericksburg Rd, Balcones Heights</p></div><div class="actions"><a class="details" href="https://www.facebook.com/events/1393695028727658/" target="_blank" rel="noopener nofollow" aria-label="Details for Hawkins Forever - A Stranger Things Day &amp; More Celebration">Details<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article>
+<article class="event"><div class="time"><b>5:00</b><small>PM</small></div><div class="info"><h4>Hawkins Forever - A Stranger Things Day &amp; More Celebration</h4><p class="venue">Wonderland of the Americas</p><p class="addr">4522 Fredericksburg Rd, Balcones Heights</p></div><div class="actions"><span class="dist-tag">5.6 mi</span><a class="details" href="https://www.facebook.com/events/1393695028727658/" target="_blank" rel="noopener nofollow" aria-label="Details for Hawkins Forever - A Stranger Things Day &amp; More Celebration">Details<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article>
 <article class="event"><div class="time"><b>5:00</b><small>PM</small></div><div class="info"><h4>Muerto Moon Lounge &amp; Hidden Runway</h4><p class="venue">3 Oak</p><p class="addr">517 Live Oak St., San Antonio</p></div><div class="actions"><span class="dist-tag">2.8 mi</span><a class="details" href="http://bar3oak.com/events" target="_blank" rel="noopener nofollow" aria-label="Details for Muerto Moon Lounge &amp; Hidden Runway">Details<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article>
 <article class="event"><div class="time"><b>5:00</b><small>PM</small></div><div class="info"><h4>Sternewirth Sessions</h4><p class="venue">Sternewirth</p><p class="addr">136 E Grayson St, San Antonio<span class="zip">, TX 78215</span><span class="org"> · Hosted by Pearl</span></p></div><div class="actions"><span class="dist-tag">1.5 mi</span><a class="details" href="https://atpearl.com/events/" target="_blank" rel="noopener nofollow" aria-label="Details for Sternewirth Sessions">Details<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article>
 <article class="event"><div class="time"><b>5:45</b><small>PM</small></div><div class="info"><h4>San Antonio miniFEST (11/6/26)</h4><p class="venue">The Rock Box</p><p class="addr">1223 E Houston St, San Antonio<span class="zip">, TX 78205</span></p></div><div class="actions"><span class="dist-tag">&lt; 0.1 mi</span><a class="details" href="https://www.facebook.com/events/1003521215895820/" target="_blank" rel="noopener nofollow" aria-label="Details for San Antonio miniFEST (11/6/26)">Details<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></article>
@@ -344,6 +345,12 @@
 </div>
   </main>
 
+  <section class="wrap about" aria-labelledby="about-title">
+    <h2 id="about-title">About Event Crawler</h2>
+    <p>Event Crawler gathers concerts, parties, markets, classes, trivia nights, sports and community events from across the San Antonio area, from downtown and the Pearl to New Braunfels, Schertz and Helotes, and puts them in one place. New events are added every day.</p>
+    <p>Pick a date, choose how far you’re willing to drive, and see what’s happening near you. Star the ones you like to find them again, or add Event Crawler to your phone’s home screen. Hosting something? <a href="/submit.html">Submit your event</a> and we’ll add it.</p>
+  </section>
+
   <nav class="wrap browse" aria-label="Browse events">
     <span>Browse:</span>
     <a href="/">Today in San Antonio</a>
@@ -371,7 +378,7 @@
 // (Google Sheets: File > Share > Publish to web > Sheet1 > Comma-separated values).
 window.EVENT_SHEET_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSh94qFcl6AXZBlNRhhlLiDyJpyYA4_oqdyIBvnuGmy6kfiIjeO6XCfll9ETfu-9anR6Y-tsipBt7GO/pub?output=csv';
 </script>
-<script src="app.js?v=17"></script>
+<script src="app.js?v=18"></script>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script src="install.js?v=2"></script>
 </body>

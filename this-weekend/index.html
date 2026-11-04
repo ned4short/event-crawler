@@ -88,7 +88,7 @@
         <div class="filter-group">
           <span class="filter-label" id="when-label">When</span>
           <div class="chips" role="group" aria-labelledby="when-label">
-            <button type="button" class="chip when" data-when="today" aria-pressed="false">Today</button>
+            <a href="/" class="chip when" role="button" data-when="today" aria-pressed="false">Today</a>
             <button type="button" class="chip when" data-when="tomorrow" aria-pressed="false">Tomorrow</button>
             <a href="/this-weekend/" class="chip when" role="button" data-when="weekend" aria-pressed="true">This weekend</a>
             <a href="/this-week/" class="chip when" role="button" data-when="week" aria-pressed="false">This week</a>
@@ -261,7 +261,7 @@
 // (Google Sheets: File > Share > Publish to web > Sheet1 > Comma-separated values).
 window.EVENT_SHEET_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSh94qFcl6AXZBlNRhhlLiDyJpyYA4_oqdyIBvnuGmy6kfiIjeO6XCfll9ETfu-9anR6Y-tsipBt7GO/pub?output=csv';
 </script>
-<script src="app.js?v=19"></script>
+<script src="app.js?v=20"></script>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script src="install.js?v=2"></script>
 </body>

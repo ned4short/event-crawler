@@ -273,7 +273,7 @@
   var cityTable = null;
   function loadCities() {
     if (cityTable) return Promise.resolve(cityTable);
-    return fetch('/data/tx-cities.json').then(function (r) { return r.json(); }).then(function (c) { cityTable = c; return c; });
+    return fetch('/data/tx-cities.json?v=2').then(function (r) { return r.json(); }).then(function (c) { cityTable = c; return c; });
   }
   function titleCase(s) { return s.replace(/\b([a-z])/g, function (m) { return m.toUpperCase(); }); }
 
@@ -465,7 +465,7 @@
   Promise.all([
     fetch(url).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); }),
     loadZips(),
-    fetch('/data/tx-cities.json').then(function (r) { return r.json(); })
+    fetch('/data/tx-cities.json?v=2').then(function (r) { return r.json(); })
   ]).then(function (res) {
     events = toEvents(parseCsv(res[0]), res[1], res[2]);
     render();

@@ -194,6 +194,67 @@ def list_html(events):
     return "\n".join(out)
 
 
+# ---------- event tags for Google (schema.org Event structured data) ----------
+def iso_start(e):
+    d = date.fromisoformat(e["date"])
+    m = minutes(e["time"])
+    if m >= 24 * 60:
+        return e["date"]
+    dt = datetime(d.year, d.month, d.day, m // 60, m % 60, tzinfo=TZ)
+    return dt.isoformat()
+
+
+def offer(e):
+    p = (e["price"] or "").strip()
+    if not p:
+        return None
+    o = {"@type": "Offer", "priceCurrency": "USD"}
+    if is_free(p):
+        o["price"] = "0"
+    else:
+        m = re.search(r"\$\s*(\d+(?:\.\d{1,2})?)", p)
+        if not m:
+            return None
+        o["price"] = m[1]
+    if re.match(r"^https?://", e["link"] or "", re.I):
+        o["url"] = e["link"]
+    return o
+
+
+def event_tag(e):
+    street = e["address"] or ""
+    addr = {"@type": "PostalAddress", "streetAddress": street, "addressLocality": e["city"] or "San Antonio",
+            "addressRegion": e["state"] or "TX", "addressCountry": "US"}
+    if e["zip"]:
+        addr["postalCode"] = e["zip"]
+    where = e["venue"] or ", ".join(x for x in (street, e["city"]) if x) or "San Antonio"
+    t = {
+        "@type": "Event",
+        "name": e["name"],
+        "startDate": iso_start(e),
+        "eventStatus": "https://schema.org/EventScheduled",
+        "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+        "location": {"@type": "Place", "name": where, "address": addr},
+        "description": f"{e['name']} at {where}" + (f", {e['city']}" if e["city"] and e["city"] not in where else "") + ".",
+    }
+    if re.match(r"^https?://", e["link"] or "", re.I):
+        t["url"] = e["link"]
+    if e["organizer"]:
+        t["organizer"] = {"@type": "Organization", "name": e["organizer"]}
+    o = offer(e)
+    if o:
+        t["offers"] = o
+    return t
+
+
+def tags_html(events):
+    if not events:
+        return ""
+    data = {"@context": "https://schema.org", "@graph": [event_tag(e) for e in events]}
+    js = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    return f'<script type="application/ld+json">{js}</script>\n'
+
+
 # ---------- building the pages ----------
 def build(template, events, today):
     for when, r in ranges(today).items():
@@ -227,6 +288,7 @@ def build(template, events, today):
         s = re.sub(r'<meta property="og:url" content="[^"]*">', f'<meta property="og:url" content="{url}">', s, count=1)
         s = re.sub(r'<meta property="og:title" content="[^"]*">', f'<meta property="og:title" content="{esc(title)}">', s, count=1)
         s = re.sub(r'<meta property="og:description" content="[^"]*">', f'<meta property="og:description" content="{esc(desc)}">', s, count=1)
+        s = s.replace("</head>", tags_html(picked) + "</head>", 1)
         s = s.replace("<body>", f'<body data-when="{when}">', 1)
         s = re.sub(r"<h1>.*?</h1>", f"<h1>{h1}</h1>", s, count=1, flags=re.S)
         s = s.replace('<h2 id="heading">Today</h2>', f'<h2 id="heading">{esc(heading)}</h2>', 1)

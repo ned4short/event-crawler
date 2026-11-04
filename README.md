@@ -1,8 +1,8 @@
-# Event Crawler
+# Bored Bandit
 
 Search local events in San Antonio by date (today, tomorrow, this weekend or any date) and distance (1, 5, 10, 20 or 40 miles).
 
-Live site: https://eventcrawler.nedwebservices.com
+Live site: https://boredbandit.nedwebservices.com
 
 ## How it works
 
@@ -22,14 +22,14 @@ Columns (first row): Date, Time, Event Name, Venue Name, Address, City, State, Z
 ## Hosting
 
 - GitHub Pages from the `main` branch of `ned4short/event-crawler`.
-- Custom domain `eventcrawler.nedwebservices.com` (set in `CNAME`).
+- Custom domain `boredbandit.nedwebservices.com` (set in `CNAME`).
 - DNS: a `CNAME` record for `eventcrawler` on nedwebservices.com pointing to `ned4short.github.io`.
 
 © 2026 Ned Web Services. All rights reserved.
 
 ## Event submissions
 
-`submit.html` emails each submission (Submitter Name, Email, Event link) to the site owner with the subject "Event Crawler Event Submission", using FormSubmit (formsubmit.co, free, no account). The `SUBMIT_URL` line in `submit.html` uses the FormSubmit alias code, so the real email address never appears on the site.
+`submit.html` emails each submission (Submitter Name, Email, Event link) to the site owner with the subject "Bored Bandit Event Submission", using FormSubmit (formsubmit.co, free, no account). The `SUBMIT_URL` line in `submit.html` uses the FormSubmit alias code, so the real email address never appears on the site.
 
 ## Advertisers
 

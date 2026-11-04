@@ -41,7 +41,7 @@ jobs:
             echo "No changes."
             exit 0
           fi
-          git config user.name "event-crawler-bot"
+          git config user.name "bored-bandit-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Update event pages"
           git pull --rebase origin main

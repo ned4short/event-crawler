@@ -1,4 +1,4 @@
-/* Event Crawler app banner: offers to install the app (or open it, if installed) in the red strip
+/* Bored Bandit app banner: offers to install the app (or open it, if installed) in the red strip
    at the top of the page. Shown only when it's actually possible, and the X hides it for 30 days. */
 (function () {
   'use strict';
@@ -62,7 +62,7 @@
     e.preventDefault();
     deferred = e;
     store(INSTALLED_KEY, null);
-    show('install', 'Get the Event Crawler app: one tap to today’s events, no app store needed.', 'Install');
+    show('install', 'Get the Bored Bandit app: one tap to today’s events, no app store needed.', 'Install');
   });
 
   window.addEventListener('appinstalled', function () {
@@ -72,7 +72,7 @@
   });
 
   function offerOpen() {
-    show('open', 'You have the Event Crawler app.', 'Open app');
+    show('open', 'You have the Bored Bandit app.', 'Open app');
   }
 
   // Already installed? (Chromium browsers can tell us; otherwise we remember a past install.)
@@ -88,6 +88,6 @@
   var ua = navigator.userAgent || '';
   var isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   if (isIOS && read(INSTALLED_KEY) !== '1') {
-    show('ios', 'Add Event Crawler to your Home Screen: tap Share, then “Add to Home Screen”.', null);
+    show('ios', 'Add Bored Bandit to your Home Screen: tap Share, then “Add to Home Screen”.', null);
   }
 })();

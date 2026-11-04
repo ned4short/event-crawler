@@ -40,7 +40,7 @@
         'Submitter Name': name,
         'Email': email,
         'Event link': link,
-        _subject: 'Event Crawler Event Submission',
+        _subject: 'Bored Bandit Event Submission',
         _replyto: email,
         _template: 'table',
         _captcha: 'false'

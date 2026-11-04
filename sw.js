@@ -1,10 +1,10 @@
-/* Event Crawler service worker: makes the site installable and keeps it usable on a weak connection. */
-var VERSION = 'ec-v6';
+/* Bored Bandit service worker: makes the site installable and keeps it usable on a weak connection. */
+var VERSION = 'ec-v7';
 var SHELL = [
-  './', 'index.html', 'submit.html', 'styles.css?v=21', 'app.js?v=20', 'submit.js?v=8', 'install.js?v=2',
-  'data/tx-zips.json', 'data/tx-cities.json?v=2', 'favicon.svg', 'icons/icon-192.png', 'manifest.webmanifest'
+  './', 'index.html', 'submit.html', 'styles.css?v=22', 'app.js?v=20', 'submit.js?v=9', 'install.js?v=3',
+  'data/tx-zips.json', 'data/tx-cities.json?v=2', 'favicon.png', 'icons/icon-192.png?v=2', 'logo.webp?v=2', 'manifest.webmanifest'
 ];
-var SHEET_KEY = 'https://eventcrawler.nedwebservices.com/__last-sheet.csv';
+var SHEET_KEY = 'https://boredbandit.nedwebservices.com/__last-sheet.csv';
 
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(VERSION).then(function (c) { return c.addAll(SHELL); }).then(function () { return self.skipWaiting(); }));

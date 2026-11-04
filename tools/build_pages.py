@@ -25,7 +25,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parent.parent
-SITE = "https://eventcrawler.nedwebservices.com"
+SITE = "https://boredbandit.nedwebservices.com"
 TZ = ZoneInfo("America/Chicago")
 DOWNTOWN = (29.4241, -98.4936)
 DEFAULT_RADIUS = 20  # miles, same default as the site
@@ -272,7 +272,7 @@ def build(template, events, today):
         n = len(picked)
         count = f"{n} event{'s' if n != 1 else ''}"
         url = f"{SITE}/{r['slug']}/"
-        title = f"Things to Do in San Antonio {r['label'].title()} ({r['dates']}) – Event Crawler"
+        title = f"Things to Do in San Antonio {r['label'].title()} ({r['dates']}) – Bored Bandit"
         desc = (f"{count} in the San Antonio area {r['label']}, {r['dates']}: concerts, parties, markets, "
                 f"classes and community events, updated every hour.")
         h1 = (f'Things to do in the <span class="hl">San Antonio area</span> {esc(r["label"])}'
@@ -311,7 +311,7 @@ def main():
         text = Path(sys.argv[1]).read_text(encoding="utf-8")
     else:
         link = re.search(r"window\.EVENT_SHEET_CSV = '([^']+)'", template)[1]
-        req = urllib.request.Request(link, headers={"User-Agent": "EventCrawler-PageBuilder"})
+        req = urllib.request.Request(link, headers={"User-Agent": "BoredBandit-PageBuilder"})
         text = urllib.request.urlopen(req, timeout=60).read().decode("utf-8")
     events = load_events(text)
     today = datetime.now(TZ).date()

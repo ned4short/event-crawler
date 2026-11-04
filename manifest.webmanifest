@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "Event Crawler – San Antonio Area Events",
-  "short_name": "Event Crawler",
+  "name": "Bored Bandit – San Antonio Area Events",
+  "short_name": "Bored Bandit",
   "description": "Find concerts, parties, markets, classes and community events in the San Antonio area, by date and distance.",
   "start_url": "/?source=app",
   "scope": "/",
@@ -10,12 +10,12 @@
   "theme_color": "#D62839",
   "categories": ["entertainment", "lifestyle", "events"],
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "icons/icon-192.png?v=2", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png?v=2", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png?v=2", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "related_applications": [
-    { "platform": "webapp", "url": "https://eventcrawler.nedwebservices.com/manifest.webmanifest" }
+    { "platform": "webapp", "url": "https://boredbandit.nedwebservices.com/manifest.webmanifest" }
   ],
   "handle_links": "preferred",
   "launch_handler": { "client_mode": ["navigate-existing", "auto"] }

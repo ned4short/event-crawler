@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://eventcrawler.nedwebservices.com/sitemap.xml
+Sitemap: https://boredbandit.nedwebservices.com/sitemap.xml

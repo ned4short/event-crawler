@@ -362,7 +362,14 @@
   }
 
   Array.prototype.forEach.call(document.querySelectorAll('.chip.when'), function (b) {
-    b.addEventListener('click', function (ev) { ev.preventDefault(); state.picked = ''; setWhen(b.getAttribute('data-when')); });
+    b.addEventListener('click', function (ev) {
+      var w = b.getAttribute('data-when');
+      // "Today" opens the home page when clicked from another page.
+      if (w === 'today' && location.pathname !== '/' && location.pathname !== '/index.html') return;
+      ev.preventDefault();
+      state.picked = '';
+      setWhen(w);
+    });
   });
   $('pick').min = todayIso();
   $('pick').addEventListener('change', function () {

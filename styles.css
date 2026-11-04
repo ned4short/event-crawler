@@ -222,3 +222,12 @@ button, input { font: inherit; color: inherit; }
   .starred-head h2 { font-size: 20px; }
   .star-btn { width: 36px; height: 36px; }
 }
+
+/* Date buttons that are links (This weekend / week / month) */
+a.chip { text-decoration: none; color: var(--ink); }
+a.chip.when[aria-pressed="true"] { color: #fff; }
+
+/* Browse links above the footer */
+.browse { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 18px; padding-top: 4px; padding-bottom: 8px; font-size: 15px; }
+.browse span { color: var(--muted); font-weight: 600; }
+.browse a { color: var(--blue); font-weight: 600; }

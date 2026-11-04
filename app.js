@@ -267,7 +267,7 @@
 
   function loadZips() {
     if (zips) return Promise.resolve(zips);
-    return fetch('data/tx-zips.json').then(function (r) { return r.json(); }).then(function (z) { zips = z; return z; });
+    return fetch('/data/tx-zips.json').then(function (r) { return r.json(); }).then(function (z) { zips = z; return z; });
   }
 
   function applyZip() {
@@ -333,7 +333,7 @@
   }
 
   Array.prototype.forEach.call(document.querySelectorAll('.chip.when'), function (b) {
-    b.addEventListener('click', function () { state.picked = ''; setWhen(b.getAttribute('data-when')); });
+    b.addEventListener('click', function (ev) { ev.preventDefault(); state.picked = ''; setWhen(b.getAttribute('data-when')); });
   });
   $('pick').min = todayIso();
   $('pick').addEventListener('change', function () {
@@ -350,7 +350,7 @@
   }
   $('prev-day').addEventListener('click', function () { step(-1); });
   $('next-day').addEventListener('click', function () { step(1); });
-  setWhen('today');
+  setWhen(document.body.getAttribute('data-when') || 'today');
 
   Array.prototype.forEach.call(document.querySelectorAll('.chip.dist'), function (b) {
     b.addEventListener('click', function () {
@@ -436,7 +436,7 @@
   Promise.all([
     fetch(url).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); }),
     loadZips(),
-    fetch('data/tx-cities.json').then(function (r) { return r.json(); })
+    fetch('/data/tx-cities.json').then(function (r) { return r.json(); })
   ]).then(function (res) {
     events = toEvents(parseCsv(res[0]), res[1], res[2]);
     render();

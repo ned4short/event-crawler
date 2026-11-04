@@ -211,7 +211,7 @@ def build(template, events, today):
         n = len(picked)
         count = f"{n} event{'s' if n != 1 else ''}"
         url = f"{SITE}/{r['slug']}/"
-        title = f"Things to Do in San Antonio {r['title']} ({r['dates']}) – Event Crawler"
+        title = f"Things to Do in San Antonio {r['label'].title()} ({r['dates']}) – Event Crawler"
         desc = (f"{count} in the San Antonio area {r['label']}, {r['dates']}: concerts, parties, markets, "
                 f"classes and community events, updated every hour.")
         h1 = (f'Things to do in the <span class="hl">San Antonio area</span> {esc(r["label"])}'

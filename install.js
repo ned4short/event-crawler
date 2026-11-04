@@ -1,5 +1,5 @@
 /* Bored Bandit app banner: offers to install the app (or open it, if installed) in the red strip
-   at the top of the page. Shown only when it's actually possible, and the X hides it for 30 days. */
+   at the top of the page. Shown only when it's actually possible, and the X hides it for 7 days. */
 (function () {
   'use strict';
 
@@ -15,7 +15,7 @@
 
   var DISMISS_KEY = 'ec_app_bar_closed';
   var INSTALLED_KEY = 'ec_app_installed';
-  var DAYS = 30;
+  var DAYS = 7;
 
   function store(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
   function read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -24,6 +24,8 @@
   var standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
   if (standalone) { store(INSTALLED_KEY, '1'); return; }
 
+  // The link boredbandit.nedwebservices.com/app (or any page with ?app) always shows the banner again.
+  if (/[?&]app(=|&|$)/.test(location.search)) store(DISMISS_KEY, null);
   var closedAt = parseInt(read(DISMISS_KEY) || '0', 10);
   var recentlyClosed = closedAt && (Date.now() - closedAt) < DAYS * 864e5;
 

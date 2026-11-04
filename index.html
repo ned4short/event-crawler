@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="styles.css?v=20">
+<link rel="stylesheet" href="styles.css?v=21">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"Event Crawler","url":"https://eventcrawler.nedwebservices.com/","description":"Search local events in San Antonio by date and distance.","publisher":{"@type":"Organization","name":"Ned Web Services","url":"https://nedwebservices.com"}}
 </script>
@@ -71,7 +71,8 @@
         </label>
         <label class="field grow1">Near
           <span class="near">
-            <input type="text" id="zip" inputmode="numeric" maxlength="5" placeholder="ZIP code" autocomplete="postal-code">
+            <input type="text" id="zip" list="near-cities" maxlength="60" placeholder="ZIP code or city" autocomplete="off" aria-describedby="near-note">
+            <datalist id="near-cities"></datalist>
             <button type="button" id="locate" class="icon-btn" aria-label="Use my location" title="Use my location">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
             </button>
@@ -129,6 +130,12 @@
     <div id="list" aria-live="polite"></div>
   </main>
 
+  <section class="wrap about" aria-labelledby="about-title">
+    <h2 id="about-title">About Event Crawler</h2>
+    <p>Event Crawler gathers concerts, parties, markets, classes, trivia nights, sports and community events from across the San Antonio area, from downtown and the Pearl to New Braunfels, Schertz and Helotes, and puts them in one place. New events are added every day.</p>
+    <p>Pick a date, choose how far you’re willing to drive, and see what’s happening near you. Star the ones you like to find them again, or add Event Crawler to your phone’s home screen. Hosting something? <a href="/submit.html">Submit your event</a> and we’ll add it.</p>
+  </section>
+
   <nav class="wrap browse" aria-label="Browse events">
     <span>Browse:</span>
     <a href="/">Today in San Antonio</a>
@@ -156,7 +163,7 @@
 // (Google Sheets: File > Share > Publish to web > Sheet1 > Comma-separated values).
 window.EVENT_SHEET_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSh94qFcl6AXZBlNRhhlLiDyJpyYA4_oqdyIBvnuGmy6kfiIjeO6XCfll9ETfu-9anR6Y-tsipBt7GO/pub?output=csv';
 </script>
-<script src="app.js?v=17"></script>
+<script src="app.js?v=18"></script>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script src="install.js?v=2"></script>
 </body>

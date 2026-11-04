@@ -1,7 +1,7 @@
 /* Event Crawler service worker: makes the site installable and keeps it usable on a weak connection. */
-var VERSION = 'ec-v3';
+var VERSION = 'ec-v4';
 var SHELL = [
-  './', 'index.html', 'submit.html', 'styles.css?v=20', 'app.js?v=17', 'submit.js?v=8', 'install.js?v=2',
+  './', 'index.html', 'submit.html', 'styles.css?v=21', 'app.js?v=18', 'submit.js?v=8', 'install.js?v=2',
   'data/tx-zips.json', 'data/tx-cities.json', 'favicon.svg', 'icons/icon-192.png', 'manifest.webmanifest'
 ];
 var SHEET_KEY = 'https://eventcrawler.nedwebservices.com/__last-sheet.csv';

@@ -270,18 +270,47 @@
     return fetch('/data/tx-zips.json').then(function (r) { return r.json(); }).then(function (z) { zips = z; return z; });
   }
 
+  var cityTable = null;
+  function loadCities() {
+    if (cityTable) return Promise.resolve(cityTable);
+    return fetch('/data/tx-cities.json').then(function (r) { return r.json(); }).then(function (c) { cityTable = c; return c; });
+  }
+  function titleCase(s) { return s.replace(/\b([a-z])/g, function (m) { return m.toUpperCase(); }); }
+
+  // "Near" accepts a 5-digit ZIP code or a Texas city name (e.g. "Helotes" or "New Braunfels, TX").
   function applyZip() {
     var v = $('zip').value.trim();
     if (!v) { state.origin = DOWNTOWN; note(''); return Promise.resolve(); }
-    if (!/^\d{5}$/.test(v)) { note('Please enter a 5-digit ZIP code.'); return Promise.resolve(); }
-    return loadZips().then(function (z) {
-      if (z[v]) { state.origin = { lat: z[v][0], lng: z[v][1], label: 'ZIP ' + v }; note(''); }
-      else { note('We couldn’t find ZIP ' + v + '. Showing events near downtown San Antonio.'); state.origin = DOWNTOWN; }
-    }).catch(function () { note('Couldn’t look up that ZIP right now.'); });
+    var zip = /^\d{5}(-\d{4})?$/.test(v) ? v.slice(0, 5) : null;
+    if (zip) {
+      return loadZips().then(function (z) {
+        if (z[zip]) { state.origin = { lat: z[zip][0], lng: z[zip][1], label: 'ZIP ' + zip }; note(''); }
+        else { note('We couldn’t find ZIP ' + zip + '. Showing events near downtown San Antonio.'); state.origin = DOWNTOWN; }
+      }).catch(function () { note('Couldn’t look up that ZIP right now.'); });
+    }
+    var city = v.toLowerCase().replace(/,?\s*(tx|texas)\.?$/, '').replace(/\s+/g, ' ').trim();
+    return loadCities().then(function (c) {
+      if (city === 'downtown' || city === 'downtown san antonio') { state.origin = DOWNTOWN; note(''); return; }
+      if (c[city]) { state.origin = { lat: c[city][0], lng: c[city][1], label: titleCase(city) }; note(''); }
+      else { note('We couldn’t find “' + v + '”. Try a ZIP code or a Texas city name. Showing events near downtown San Antonio.'); state.origin = DOWNTOWN; }
+    }).catch(function () { note('Couldn’t look up that place right now.'); });
   }
 
+  // Suggest nearby cities as the visitor types.
+  loadCities().then(function (c) {
+    var list = document.getElementById('near-cities');
+    if (!list) return;
+    Object.keys(c).filter(function (k) {
+      return miles(DOWNTOWN, { lat: c[k][0], lng: c[k][1] }) <= 60;
+    }).sort().forEach(function (k) {
+      var o = document.createElement('option');
+      o.value = titleCase(k);
+      list.appendChild(o);
+    });
+  }).catch(function () {});
+
   $('locate').addEventListener('click', function () {
-    if (!navigator.geolocation) { note('Your browser can’t share your location. Try a ZIP code instead.'); return; }
+    if (!navigator.geolocation) { note('Your browser can’t share your location. Try a ZIP code or city instead.'); return; }
     note('Finding your location…');
     navigator.geolocation.getCurrentPosition(function (pos) {
       state.origin = { lat: pos.coords.latitude, lng: pos.coords.longitude, label: 'your location' };
@@ -289,7 +318,7 @@
       note('');
       render();
     }, function () {
-      note('We couldn’t get your location. Try a ZIP code instead.');
+      note('We couldn’t get your location. Try a ZIP code or city instead.');
     }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 600000 });
   });
 

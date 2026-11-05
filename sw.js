@@ -1,7 +1,7 @@
 /* Bored Bandit service worker: makes the site installable and keeps it usable on a weak connection. */
-var VERSION = 'ec-v8';
+var VERSION = 'ec-v10';
 var SHELL = [
-  './', 'index.html', 'submit.html', 'styles.css?v=22', 'app.js?v=20', 'submit.js?v=9', 'install.js?v=4',
+  './', 'index.html', 'submit.html', 'contact.html', 'styles.css?v=24', 'app.js?v=20', 'submit.js?v=11', 'contact.js?v=1', 'install.js?v=4',
   'data/tx-zips.json', 'data/tx-cities.json?v=2', 'favicon.png', 'icons/icon-192.png?v=2', 'logo.webp?v=2', 'manifest.webmanifest'
 ];
 var SHEET_KEY = 'https://boredbandit.nedwebservices.com/__last-sheet.csv';

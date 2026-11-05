@@ -6,6 +6,7 @@
   var f = {
     name: document.getElementById('name'),
     email: document.getElementById('email'),
+    phone: document.getElementById('phone'),
     link: document.getElementById('link'),
     website: form.querySelector('[name="website"]')
   };
@@ -21,9 +22,11 @@
     var name = f.name.value.trim();
     var email = f.email.value.trim();
     var link = f.link.value.trim();
+    var phone = f.phone.value.trim();
 
     if (!name) return fail('Please enter your name.', f.name);
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail('Please enter a valid email address.', f.email);
+    if (phone && (!/^[0-9+().\-\s]+$/.test(phone) || phone.replace(/\D/g, '').length < 7)) return fail('Please check your phone number, or leave it blank.', f.phone);
     if (link && !/^https?:\/\//i.test(link)) { link = 'https://' + link; f.link.value = link; }
     try { new URL(link); } catch (e) { return fail('Please paste the full link to your event.', f.link); }
 
@@ -36,24 +39,24 @@
     fetch(window.SUBMIT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ name: name, email: email, link: link })
+      body: JSON.stringify({ name: name, email: email, phone: phone, link: link, website: f.website.value })
     })
       .then(function (r) { return r.json(); })
       .then(function (res) {
         if (res && (res.success === true || res.success === 'true')) done();
-        else throw new Error((res && res.message) || 'failed');
+        else throw new Error((res && res.message) || '');
       })
-      .catch(function () {
+      .catch(function (e) {
         btn.disabled = false;
         btn.textContent = 'Submit my event';
-        fail('Something went wrong sending your event. Please try again in a moment.');
+        fail((e && e.message && e.message !== 'Failed to fetch') ? e.message : 'Something went wrong sending your event. Please try again in a moment.');
       });
   });
 
   function done() {
     btn.disabled = true;
     btn.textContent = 'Sent';
-    [f.name, f.email, f.link].forEach(function (i) { i.readOnly = true; });
+    [f.name, f.email, f.phone, f.link].forEach(function (i) { i.readOnly = true; });
     var t = document.getElementById('thanks');
     t.hidden = false;
     t.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

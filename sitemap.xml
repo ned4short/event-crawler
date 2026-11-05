@@ -2,6 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://boredbandit.nedwebservices.com/</loc><changefreq>daily</changefreq></url>
   <url><loc>https://boredbandit.nedwebservices.com/submit.html</loc><changefreq>monthly</changefreq></url>
+  <url><loc>https://boredbandit.nedwebservices.com/contact.html</loc><changefreq>monthly</changefreq></url>
   <url><loc>https://boredbandit.nedwebservices.com/this-weekend/</loc><changefreq>hourly</changefreq></url>
   <url><loc>https://boredbandit.nedwebservices.com/this-week/</loc><changefreq>hourly</changefreq></url>
   <url><loc>https://boredbandit.nedwebservices.com/this-month/</loc><changefreq>hourly</changefreq></url>

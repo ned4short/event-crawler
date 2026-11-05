@@ -105,7 +105,7 @@ button, input { font: inherit; color: inherit; }
 .site-footer p { margin: 0; max-width: 560px; }
 
 /* Submit-my-event button */
-.submit-cta { display: flex; justify-content: center; padding-top: 24px; padding-bottom: 32px; }
+.submit-cta { display: flex; justify-content: center; flex-wrap: wrap; gap: 16px 20px; padding-top: 24px; padding-bottom: 32px; }
 .cta-btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; padding: 0 32px; box-shadow: 5px 5px 0 var(--yellow); }
 
 /* Submit page */
@@ -127,6 +127,7 @@ button, input { font: inherit; color: inherit; }
   .wrap { padding-left: 16px; padding-right: 16px; }
   .search { padding: 18px; box-shadow: 6px 6px 0 var(--yellow); }
   .primary { width: 100%; }
+  .submit-cta .cta-btn { width: 100%; }
 }
 
 /* Compact event list on phones */
@@ -241,3 +242,7 @@ a.chip.when[aria-pressed="true"] { color: #fff; }
 /* Bored Bandit logo in the header */
 .logo img { display: block; height: 110px; width: auto; margin: -8px 0; }
 @media (max-width: 520px) { .logo img { height: 84px; margin: -4px 0; } }
+
+.secondary { height: 52px; padding: 0 28px; border: 2px solid var(--ink); border-radius: 12px; background: #fff; color: var(--ink); font-size: 17px; font-weight: 700; cursor: pointer; }
+.secondary:hover { background: #FFF6DB; }
+.optional { font-weight: 400; color: var(--muted); }

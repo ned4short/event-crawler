@@ -36,15 +36,7 @@
     fetch(window.SUBMIT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        'Submitter Name': name,
-        'Email': email,
-        'Event link': link,
-        _subject: 'Bored Bandit Event Submission',
-        _replyto: email,
-        _template: 'table',
-        _captcha: 'false'
-      })
+      body: JSON.stringify({ name: name, email: email, link: link })
     })
       .then(function (r) { return r.json(); })
       .then(function (res) {

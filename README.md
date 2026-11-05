@@ -29,7 +29,7 @@ Columns (first row): Date, Time, Event Name, Venue Name, Address, City, State, Z
 
 ## Event submissions
 
-`submit.html` emails each submission (Submitter Name, Email, Event link) to the site owner with the subject "Bored Bandit Event Submission", using FormSubmit (formsubmit.co, free, no account). The `SUBMIT_URL` line in `submit.html` uses the FormSubmit alias code, so the real email address never appears on the site.
+`submit.html` sends each submission (name, email, event link) to `https://www.ned4short.com/forms/event.php`, a PHP script on the ned4short.com GoDaddy hosting (`SUBMIT_URL` in `submit.html`). It emails nedu@nedairfilters.com with the subject "Bored Bandit Event Submission" and Reply-To set to the submitter, so the real address never appears on the site. The script only accepts requests from boredbandit.nedwebservices.com (and the old eventcrawler address).
 
 ## Advertisers
 

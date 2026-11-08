@@ -191,7 +191,8 @@ def list_html(events):
             out.append(f'<section class="group"><h3><span class="dot afternoon"></span>{esc(long(d))}</h3>')
         out.append(card(e))
         shown += 1
-        if len(events) > 25 and shown % 15 == 0 and shown < len(events):
+        # Ned Ads slideshow: after event 10, then every 20 more, never within the last 5 (lists over 25 only).
+        if len(events) > 25 and shown >= 10 and (shown - 10) % 20 == 0 and len(events) - shown >= 5:
             ad_no += 1
             out.append(f'<div class="inline-ads" data-ned-ads data-start="{ad_no}"></div>')
     out.append("</section>")

@@ -123,7 +123,9 @@
       g.items.push(e);
     });
 
-    // On long lists (more than 25 events), show the Ned Ads slideshow after every 15 events.
+    // On long lists (more than 25 events), show the Ned Ads slideshow after the 10th event,
+    // then after every 20 more (30, 50, 70...), but never within the last 5 events.
+    var AD_FIRST = 10, AD_EVERY = 20, AD_MIN_LIST = 25, AD_END_GAP = 5;
     var shown = 0, adNo = 0, total = list.length;
     groups.forEach(function (g) {
       var sec = el('section', 'group');
@@ -134,7 +136,7 @@
       g.items.forEach(function (e) {
         sec.appendChild(card(e));
         shown++;
-        if (total > 25 && shown % 15 === 0 && shown < total) {
+        if (total > AD_MIN_LIST && shown >= AD_FIRST && (shown - AD_FIRST) % AD_EVERY === 0 && total - shown >= AD_END_GAP) {
           adNo++;
           var ad = el('div', 'inline-ads');
           ad.setAttribute('data-ned-ads', '');

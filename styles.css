@@ -246,3 +246,6 @@ a.chip.when[aria-pressed="true"] { color: #fff; }
 .secondary { height: 52px; padding: 0 28px; border: 2px solid var(--ink); border-radius: 12px; background: #fff; color: var(--ink); font-size: 17px; font-weight: 700; cursor: pointer; }
 .secondary:hover { background: #FFF6DB; }
 .optional { font-weight: 400; color: var(--muted); }
+
+/* Ned Ads slideshow between events on long lists */
+.inline-ads { margin: 8px 0; padding: 4px 0; border-bottom: 1px solid var(--line); }

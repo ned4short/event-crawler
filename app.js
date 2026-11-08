@@ -46,6 +46,12 @@
       var last = toIso(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)));
       return { from: t, to: last, title: 'This month · ' + shortDate(t) + ' – ' + shortDate(last), multi: true };
     }
+    if (state.when === 'nextmonth') {
+      var n = toDate(t);
+      var first = toIso(new Date(Date.UTC(n.getUTCFullYear(), n.getUTCMonth() + 1, 1)));
+      var end = toIso(new Date(Date.UTC(n.getUTCFullYear(), n.getUTCMonth() + 2, 0)));
+      return { from: first, to: end, title: 'Next month · ' + MONTHS[toDate(first).getUTCMonth()] + ' ' + toDate(first).getUTCFullYear(), multi: true };
+    }
     if (state.when === 'pick' && state.picked) { return { from: state.picked, to: state.picked, title: longDate(state.picked) }; }
     return { from: t, to: t, title: 'Today · ' + longDate(t) };
   }
@@ -117,13 +123,25 @@
       g.items.push(e);
     });
 
+    // On long lists (more than 25 events), show the Ned Ads slideshow after every 15 events.
+    var shown = 0, adNo = 0, total = list.length;
     groups.forEach(function (g) {
       var sec = el('section', 'group');
       var h = el('h3');
       h.appendChild(el('span', 'dot ' + g.dot));
       h.appendChild(document.createTextNode(g.label));
       sec.appendChild(h);
-      g.items.forEach(function (e) { sec.appendChild(card(e)); });
+      g.items.forEach(function (e) {
+        sec.appendChild(card(e));
+        shown++;
+        if (total > 25 && shown % 15 === 0 && shown < total) {
+          adNo++;
+          var ad = el('div', 'inline-ads');
+          ad.setAttribute('data-ned-ads', '');
+          ad.setAttribute('data-start', String(adNo));
+          sec.appendChild(ad);
+        }
+      });
       box.appendChild(sec);
     });
   }

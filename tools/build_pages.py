@@ -181,7 +181,7 @@ def list_html(events):
     if not events:
         return ('<div class="empty"><p class="big">No events found yet</p><p class="muted">Our crawler adds new '
                 'events every day. Try another date, a wider distance, or clear your search.</p></div>')
-    out, last = [], None
+    out, last, shown, ad_no = [], None, 0, 0
     for e in events:
         if e["date"] != last:
             if last is not None:
@@ -190,6 +190,10 @@ def list_html(events):
             d = date.fromisoformat(e["date"])
             out.append(f'<section class="group"><h3><span class="dot afternoon"></span>{esc(long(d))}</h3>')
         out.append(card(e))
+        shown += 1
+        if len(events) > 25 and shown % 15 == 0 and shown < len(events):
+            ad_no += 1
+            out.append(f'<div class="inline-ads" data-ned-ads data-start="{ad_no}"></div>')
     out.append("</section>")
     return "\n".join(out)
 

@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="styles.css?v=24">
+<link rel="stylesheet" href="styles.css?v=25">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"Bored Bandit","url":"https://boredbandit.nedwebservices.com/","description":"Search local events in San Antonio by date and distance.","publisher":{"@type":"Organization","name":"Ned Web Services","url":"https://nedwebservices.com"}}
 </script>
@@ -83,6 +83,7 @@
             <a href="/this-weekend/" class="chip when" role="button" data-when="weekend" aria-pressed="false">This weekend</a>
             <a href="/this-week/" class="chip when" role="button" data-when="week" aria-pressed="false">This week</a>
             <a href="/this-month/" class="chip when" role="button" data-when="month" aria-pressed="false">This month</a>
+            <button type="button" class="chip when" data-when="nextmonth" aria-pressed="false">Next month</button>
             <span class="day-nav">
               <button type="button" class="arrow-btn" id="prev-day" aria-label="Previous day">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
@@ -156,7 +157,7 @@
 // (Google Sheets: File > Share > Publish to web > Sheet1 > Comma-separated values).
 window.EVENT_SHEET_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSh94qFcl6AXZBlNRhhlLiDyJpyYA4_oqdyIBvnuGmy6kfiIjeO6XCfll9ETfu-9anR6Y-tsipBt7GO/pub?output=csv';
 </script>
-<script src="app.js?v=20"></script>
+<script src="app.js?v=21"></script>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script src="install.js?v=4"></script>
 </body>

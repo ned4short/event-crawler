@@ -498,14 +498,16 @@
 
   var url = window.EVENT_SHEET_CSV + (window.EVENT_SHEET_CSV.indexOf('?') > -1 ? '&' : '?') + 't=' + Math.floor(Date.now() / 60000);
   Promise.all([
-    fetch(url).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); }),
+    fetch(url).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+      .catch(function () { return fetch('/data/events.csv?t=' + Math.floor(Date.now() / 3600000)).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); }); }),
     loadZips(),
     fetch('/data/tx-cities.json?v=3').then(function (r) { return r.json(); })
   ]).then(function (res) {
     events = toEvents(parseCsv(res[0]), res[1], res[2]);
     render();
   }).catch(function () {
-    $('summary').textContent = 'Events couldn’t load. Please refresh the page.';
+    // Keep the events already written into the page; only complain if there are none.
+    if (!document.querySelector('#list .event')) $('summary').textContent = 'Events couldn’t load. Please refresh the page.';
   });
 
   // ---------- area memory: remember the visitor's area and offer a way back ----------

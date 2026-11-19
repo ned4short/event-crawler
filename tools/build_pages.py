@@ -405,6 +405,9 @@ def main():
         link = re.search(r"window\.EVENT_SHEET_CSV = '([^']+)'", template)[1]
         req = urllib.request.Request(link, headers={"User-Agent": "BoredBandit-PageBuilder"})
         text = urllib.request.urlopen(req, timeout=60).read().decode("utf-8")
+        # Same-site copy of the sheet. The browser falls back to it when the sheet
+        # can't be reached (Google's crawler can't fetch the published sheet).
+        (ROOT / "data" / "events.csv").write_text(text, encoding="utf-8")
     events = load_events(text)
     today = datetime.now(TZ).date()
     build(template, events, today)

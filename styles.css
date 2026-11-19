@@ -249,3 +249,18 @@ a.chip.when[aria-pressed="true"] { color: #fff; }
 
 /* Ned Ads slideshow between events on long lists */
 .inline-ads { margin: 8px 0; padding: 4px 0; border-bottom: 1px solid var(--line); }
+
+/* Area picker (San Antonio / Austin / Corpus Christi) */
+.area-picker { position: relative; }
+.area-picker > summary { list-style: none; cursor: pointer; user-select: none; }
+.area-picker > summary::-webkit-details-marker { display: none; }
+.area-picker .caret { transition: transform .15s ease; }
+.area-picker[open] .caret { transform: rotate(180deg); }
+.area-menu { position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; min-width: 220px; background: #fff; border: 2px solid var(--ink); border-radius: 14px; box-shadow: 5px 5px 0 var(--yellow); padding: 6px; display: flex; flex-direction: column; }
+.area-menu a { padding: 11px 14px; border-radius: 10px; color: var(--ink); font-weight: 600; text-decoration: none; }
+.area-menu a:hover { background: #F1F3F8; }
+.area-menu a[aria-current="page"] { color: var(--red); }
+.area-menu a[aria-current="page"]::after { content: " ✓"; }
+.area-hint { margin: 10px 0 0 !important; font-size: 16px !important; }
+.area-hint a { font-weight: 700; }
+@media (max-width: 520px) { .area-menu { right: auto; left: 0; } }

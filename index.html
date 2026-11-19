@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-area="san-antonio">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="styles.css?v=25">
+<link rel="stylesheet" href="styles.css?v=26">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"Bored Bandit","url":"https://boredbandit.nedwebservices.com/","description":"Search local events in San Antonio by date and distance.","publisher":{"@type":"Organization","name":"Ned Web Services","url":"https://nedwebservices.com"}}
 </script>
@@ -43,16 +43,24 @@
 
   <header class="site-header wrap">
     <a href="/" class="logo" aria-label="Bored Bandit home"><img src="/logo.webp?v=2" alt="Bored Bandit" width="188" height="110"></a>
-    <div class="city-pill">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D62839" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
-      <span>San Antonio, TX</span>
-      <span class="muted">· more cities soon</span>
-    </div>
+    <details class="area-picker">
+      <summary class="city-pill" aria-label="Choose an area">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D62839" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+        <span class="area-current">San Antonio area</span>
+        <svg class="caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <nav class="area-menu" aria-label="Choose an area">
+        <a href="/" data-area="san-antonio" aria-current="page">San Antonio area</a>
+        <a href="/austin/" data-area="austin">Austin area</a>
+        <a href="/corpus-christi/" data-area="corpus-christi">Corpus Christi area</a>
+      </nav>
+    </details>
   </header>
 
   <section class="hero wrap">
     <h1>Find something to do in the <span class="hl">San Antonio area</span><span class="red">.</span></h1>
     <p>Concerts, parties, markets, classes and community events from all over town, gathered in one place and updated every day.</p>
+    <p class="area-hint" id="area-hint" hidden></p>
   </section>
 
   <section class="wrap">
@@ -157,7 +165,7 @@
 // (Google Sheets: File > Share > Publish to web > Sheet1 > Comma-separated values).
 window.EVENT_SHEET_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSh94qFcl6AXZBlNRhhlLiDyJpyYA4_oqdyIBvnuGmy6kfiIjeO6XCfll9ETfu-9anR6Y-tsipBt7GO/pub?output=csv';
 </script>
-<script src="app.js?v=23"></script>
+<script src="app.js?v=24"></script>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script src="install.js?v=4"></script>
 </body>

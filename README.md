@@ -48,3 +48,17 @@ Each event has a star. Starred events are saved on the visitor's own device (bro
 ## This weekend / This week / This month pages
 
 `/this-weekend/`, `/this-week/` and `/this-month/` are rebuilt 3 times a day (7 AM, 1 PM and 7 PM Central) by GitHub Actions (`.github/workflows/build-pages.yml` runs `tools/build_pages.py`). Each is a copy of `index.html` with its own title and description and with that range's events (within 20 miles of downtown) written into the page, so search engines can read them. In the browser, `app.js` then keeps the page live from the sheet. The date buttons on every page are real links to these pages, and a "Browse" line above the footer links to all of them. To rebuild right away: Actions tab → "Build event pages" → Run workflow.
+
+## Areas (San Antonio, Austin, Corpus Christi)
+
+One sheet feeds all three areas. Each area has its own pages, built by the same workflow:
+
+| Area | Home | Range pages |
+|---|---|---|
+| San Antonio | `/` | `/this-weekend/`, `/this-week/`, `/this-month/` |
+| Austin | `/austin/` | `/austin/this-weekend/`, `/austin/this-week/`, `/austin/this-month/` |
+| Corpus Christi | `/corpus-christi/` | `/corpus-christi/this-weekend/`, `/corpus-christi/this-week/`, `/corpus-christi/this-month/` |
+
+Each area page searches within 20 miles of that city's downtown by default, and its headline reads "Find something to do in the [city] area." The area picker in the header switches between them, and the site remembers the last area a visitor picked. Events with no usable location show only in San Antonio. The builder also writes `sitemap.xml` with every area page.
+
+To add an area: add it to `AREAS` in both `tools/build_pages.py` and `app.js`, add a link to the `.area-menu` in `index.html`, add `<area>` to the workflow's `git add` line, and bump the `?v=` numbers and `sw.js` VERSION.

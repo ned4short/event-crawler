@@ -1,6 +1,6 @@
 name: Build event pages
 
-# Rebuilds /this-weekend/, /this-week/ and /this-month/ from the Event Crawler sheet.
+# Rebuilds the area home pages, the this-weekend/this-week/this-month pages and sitemap.xml from the Event Crawler sheet.
 on:
   schedule:
     # 7 AM, 1 PM and 7 PM Central. GitHub schedules run on UTC time:
@@ -36,7 +36,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          git add this-weekend this-week this-month
+          git add this-weekend this-week this-month austin corpus-christi sitemap.xml
           if git diff --cached --quiet; then
             echo "No changes."
             exit 0

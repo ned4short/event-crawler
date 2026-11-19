@@ -2,7 +2,15 @@
   'use strict';
 
   var TZ = 'America/Chicago';
-  var DOWNTOWN = { lat: 29.4241, lng: -98.4936, label: 'downtown San Antonio' };
+  // Areas: each has its own pages (San Antonio at /, Austin at /austin/, Corpus Christi at /corpus-christi/).
+  var AREAS = {
+    'san-antonio': { name: 'San Antonio', home: '/', lat: 29.4241, lng: -98.4936 },
+    'austin': { name: 'Austin', home: '/austin/', lat: 30.2672, lng: -97.7431 },
+    'corpus-christi': { name: 'Corpus Christi', home: '/corpus-christi/', lat: 27.8006, lng: -97.3964 }
+  };
+  var AREA_KEY = AREAS[document.documentElement.getAttribute('data-area')] ? document.documentElement.getAttribute('data-area') : 'san-antonio';
+  var AREA = AREAS[AREA_KEY];
+  var DOWNTOWN = { lat: AREA.lat, lng: AREA.lng, label: 'downtown ' + AREA.name };
   var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
@@ -293,7 +301,7 @@
   var cityTable = null;
   function loadCities() {
     if (cityTable) return Promise.resolve(cityTable);
-    return fetch('/data/tx-cities.json?v=2').then(function (r) { return r.json(); }).then(function (c) { cityTable = c; return c; });
+    return fetch('/data/tx-cities.json?v=3').then(function (r) { return r.json(); }).then(function (c) { cityTable = c; return c; });
   }
   function titleCase(s) { return s.replace(/\b([a-z])/g, function (m) { return m.toUpperCase(); }); }
 
@@ -305,14 +313,14 @@
     if (zip) {
       return loadZips().then(function (z) {
         if (z[zip]) { state.origin = { lat: z[zip][0], lng: z[zip][1], label: 'ZIP ' + zip }; note(''); }
-        else { note('We couldn’t find ZIP ' + zip + '. Showing events near downtown San Antonio.'); state.origin = DOWNTOWN; }
+        else { note('We couldn’t find ZIP ' + zip + '. Showing events near ' + DOWNTOWN.label + '.'); state.origin = DOWNTOWN; }
       }).catch(function () { note('Couldn’t look up that ZIP right now.'); });
     }
     var city = v.toLowerCase().replace(/,?\s*(tx|texas)\.?$/, '').replace(/\s+/g, ' ').trim();
     return loadCities().then(function (c) {
-      if (city === 'downtown' || city === 'downtown san antonio') { state.origin = DOWNTOWN; note(''); return; }
+      if (city === 'downtown' || city === DOWNTOWN.label.toLowerCase()) { state.origin = DOWNTOWN; note(''); return; }
       if (c[city]) { state.origin = { lat: c[city][0], lng: c[city][1], label: titleCase(city) }; note(''); }
-      else { note('We couldn’t find “' + v + '”. Try a ZIP code or a Texas city name. Showing events near downtown San Antonio.'); state.origin = DOWNTOWN; }
+      else { note('We couldn’t find “' + v + '”. Try a ZIP code or a Texas city name. Showing events near ' + DOWNTOWN.label + '.'); state.origin = DOWNTOWN; }
     }).catch(function () { note('Couldn’t look up that place right now.'); });
   }
 
@@ -385,7 +393,7 @@
     b.addEventListener('click', function (ev) {
       var w = b.getAttribute('data-when');
       // "Today" opens the home page when clicked from another page.
-      if (w === 'today' && location.pathname !== '/' && location.pathname !== '/index.html') return;
+      if (w === 'today' && location.pathname !== AREA.home && location.pathname !== AREA.home + 'index.html') return;
       ev.preventDefault();
       state.picked = '';
       setWhen(w);
@@ -492,11 +500,39 @@
   Promise.all([
     fetch(url).then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); }),
     loadZips(),
-    fetch('/data/tx-cities.json?v=2').then(function (r) { return r.json(); })
+    fetch('/data/tx-cities.json?v=3').then(function (r) { return r.json(); })
   ]).then(function (res) {
     events = toEvents(parseCsv(res[0]), res[1], res[2]);
     render();
   }).catch(function () {
     $('summary').textContent = 'Events couldn’t load. Please refresh the page.';
   });
+
+  // ---------- area memory: remember the visitor's area and offer a way back ----------
+  (function () {
+    var KEY = 'bb_area';
+    var saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (x) {}
+    var hint = $('area-hint');
+    if (hint && saved && saved !== AREA_KEY && AREAS[saved] ) {
+      hint.innerHTML = '';
+      hint.appendChild(document.createTextNode('Looking for the ' + AREAS[saved].name + ' area? '));
+      var a = el('a', null, 'See ' + AREAS[saved].name + ' events');
+      a.href = AREAS[saved].home;
+      hint.appendChild(a);
+      hint.hidden = false;
+    }
+    try { localStorage.setItem(KEY, AREA_KEY); } catch (x) {}
+    // Picking an area from the menu makes it the remembered area right away.
+    Array.prototype.forEach.call(document.querySelectorAll('.area-menu a[data-area]'), function (a) {
+      a.addEventListener('click', function () { try { localStorage.setItem(KEY, a.getAttribute('data-area')); } catch (x) {} });
+    });
+    if (hint) hint.addEventListener('click', function (ev) {
+      var t = ev.target.closest('a');
+      if (t && saved) { try { localStorage.setItem(KEY, saved); } catch (x) {} }
+    });
+    // Close the area menu when clicking elsewhere.
+    var picker = document.querySelector('.area-picker');
+    if (picker) document.addEventListener('click', function (ev) { if (!picker.contains(ev.target)) picker.removeAttribute('open'); });
+  })();
 })();

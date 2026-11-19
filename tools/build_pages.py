@@ -27,7 +27,6 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parent.parent
 SITE = "https://boredbandit.nedwebservices.com"
 TZ = ZoneInfo("America/Chicago")
-DOWNTOWN = (29.4241, -98.4936)
 DEFAULT_RADIUS = 20  # miles, same default as the site
 DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August",
@@ -261,53 +260,141 @@ def tags_html(events):
 
 
 # ---------- building the pages ----------
-def build(template, events, today):
-    for when, r in ranges(today).items():
-        lo, hi = r["from"].isoformat(), r["to"].isoformat()
-        picked = []
-        for e in events:
-            if not (lo <= e["date"] <= hi):
-                continue
-            e = dict(e)
-            e["mi"] = miles(DOWNTOWN, e["pos"]) if e.get("pos") else None
-            if e["mi"] is not None and e["mi"] > DEFAULT_RADIUS:
-                continue
-            picked.append(e)
-        picked.sort(key=lambda e: (e["date"], minutes(e["time"])))
-        n = len(picked)
-        count = f"{n} event{'s' if n != 1 else ''}"
-        url = f"{SITE}/{r['slug']}/"
-        title = f"Things to Do in San Antonio {r['label'].title()} ({r['dates']}) – Bored Bandit"
-        desc = (f"{count} in the San Antonio area {r['label']}, {r['dates']}: concerts, parties, markets, "
-                f"classes and community events, updated every hour.")
-        h1 = (f'Things to do in the <span class="hl">San Antonio area</span> {esc(r["label"])}'
-              f'<span class="red">.</span>')
-        heading = f'{r["title"]} · {r["dates"]}'
-        summary = f"{count} within {DEFAULT_RADIUS} miles of downtown San Antonio"
+AREAS = [
+    {"key": "san-antonio", "name": "San Antonio", "prefix": "", "center": (29.4241, -98.4936),
+     "places": "from downtown and the Pearl to New Braunfels, Schertz and Helotes"},
+    {"key": "austin", "name": "Austin", "prefix": "austin", "center": (30.2672, -97.7431),
+     "places": "from downtown and South Congress to Round Rock, Georgetown, Pflugerville and San Marcos"},
+    {"key": "corpus-christi", "name": "Corpus Christi", "prefix": "corpus-christi", "center": (27.8006, -97.3964),
+     "places": "from downtown and the bayfront to Portland, Robstown, Port Aransas and North Padre Island"},
+]
+SA_PLACES = AREAS[0]["places"]
 
-        s = template
-        s = s.replace("<head>", '<head>\n<base href="/">', 1)
-        s = re.sub(r"<title>.*?</title>", f"<title>{esc(title)}</title>", s, count=1, flags=re.S)
-        s = re.sub(r'<meta name="description" content="[^"]*">', f'<meta name="description" content="{esc(desc)}">', s, count=1)
-        s = re.sub(r'<link rel="canonical" href="[^"]*">', f'<link rel="canonical" href="{url}">', s, count=1)
-        s = re.sub(r'<meta property="og:url" content="[^"]*">', f'<meta property="og:url" content="{url}">', s, count=1)
-        s = re.sub(r'<meta property="og:title" content="[^"]*">', f'<meta property="og:title" content="{esc(title)}">', s, count=1)
-        s = re.sub(r'<meta property="og:description" content="[^"]*">', f'<meta property="og:description" content="{esc(desc)}">', s, count=1)
-        s = s.replace("</head>", tags_html(picked) + "</head>", 1)
-        s = s.replace("<body>", f'<body data-when="{when}">', 1)
+
+def area_url(area, slug=""):
+    parts = [x for x in (area["prefix"], slug) if x]
+    return f"{SITE}/" + "".join(p + "/" for p in parts)
+
+
+def area_path(area, slug=""):
+    parts = [x for x in (area["prefix"], slug) if x]
+    return "/" + "".join(p + "/" for p in parts)
+
+
+def area_template(template, area):
+    """Turn the San Antonio home page into the same page for another area."""
+    s = template
+    if area["key"] == "san-antonio":
+        return s
+    name = area["name"]
+    s = s.replace('data-area="san-antonio">', f'data-area="{area["key"]}">', 1)
+    s = s.replace('<span class="area-current">San Antonio area</span>', f'<span class="area-current">{esc(name)} area</span>', 1)
+    s = s.replace('<a href="/" data-area="san-antonio" aria-current="page">', '<a href="/" data-area="san-antonio">', 1)
+    s = s.replace(f'<a href="/{area["prefix"]}/" data-area="{area["key"]}">', f'<a href="/{area["prefix"]}/" data-area="{area["key"]}" aria-current="page">', 1)
+    home = area_path(area)
+    # Date buttons and Browse links point to this area's pages.
+    s = s.replace('<a href="/" class="chip when"', f'<a href="{home}" class="chip when"', 1)
+    for slug in ("this-weekend", "this-week", "this-month"):
+        s = s.replace(f'<a href="/{slug}/" class="chip when"', f'<a href="{area_path(area, slug)}" class="chip when"', 1)
+        s = s.replace(f'<a href="/{slug}/">', f'<a href="{area_path(area, slug)}">')
+    s = s.replace('<a href="/">Today in San Antonio</a>', f'<a href="{home}">Today in {esc(name)}</a>', 1)
+    s = s.replace("from across the San Antonio area, " + SA_PLACES, f"from across the {name} area, " + area["places"], 1)
+    s = s.replace('"description":"Search local events in San Antonio by date and distance."',
+                  f'"description":"Search local events in the {name} area by date and distance."', 1)
+    s = re.sub(r"<h1>.*?</h1>", f'<h1>Find something to do in the <span class="hl">{esc(name)} area</span><span class="red">.</span></h1>', s, count=1, flags=re.S)
+    return s
+
+
+def write(path, s):
+    out = ROOT / path.strip("/") / "index.html"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    old = out.read_text() if out.exists() else ""
+    if old != s:
+        out.write_text(s)
+    return old != s
+
+
+def page(base, area, when, r, picked, page_title, desc, h1, url):
+    n = len(picked)
+    count = f"{n} event{'s' if n != 1 else ''}"
+    heading = f'{r["title"]} · {r["dates"]}'
+    summary = f"{count} within {DEFAULT_RADIUS} miles of downtown {area['name']}"
+    s = base
+    s = s.replace("<head>", '<head>\n<base href="/">', 1)
+    s = re.sub(r"<title>.*?</title>", f"<title>{esc(page_title)}</title>", s, count=1, flags=re.S)
+    s = re.sub(r'<meta name="description" content="[^"]*">', f'<meta name="description" content="{esc(desc)}">', s, count=1)
+    s = re.sub(r'<link rel="canonical" href="[^"]*">', f'<link rel="canonical" href="{url}">', s, count=1)
+    s = re.sub(r'<meta property="og:url" content="[^"]*">', f'<meta property="og:url" content="{url}">', s, count=1)
+    s = re.sub(r'<meta property="og:title" content="[^"]*">', f'<meta property="og:title" content="{esc(page_title)}">', s, count=1)
+    s = re.sub(r'<meta property="og:description" content="[^"]*">', f'<meta property="og:description" content="{esc(desc)}">', s, count=1)
+    s = s.replace("</head>", tags_html(picked) + "</head>", 1)
+    s = s.replace("<body>", f'<body data-when="{when}">', 1)
+    if h1:
         s = re.sub(r"<h1>.*?</h1>", f"<h1>{h1}</h1>", s, count=1, flags=re.S)
-        s = s.replace('<h2 id="heading">Today</h2>', f'<h2 id="heading">{esc(heading)}</h2>', 1)
-        s = s.replace('<p id="summary" class="muted">Loading events…</p>', f'<p id="summary" class="muted">{esc(summary)}</p>', 1)
-        s = s.replace('<div id="list" aria-live="polite"></div>', f'<div id="list" aria-live="polite">\n{list_html(picked)}\n</div>', 1)
-        # The matching date button starts out selected.
+    s = s.replace('<h2 id="heading">Today</h2>', f'<h2 id="heading">{esc(heading)}</h2>', 1)
+    s = s.replace('<p id="summary" class="muted">Loading events…</p>', f'<p id="summary" class="muted">{esc(summary)}</p>', 1)
+    s = s.replace('<div id="list" aria-live="polite"></div>', f'<div id="list" aria-live="polite">\n{list_html(picked)}\n</div>', 1)
+    if when != "today":
         s = s.replace('data-when="today" aria-pressed="true"', 'data-when="today" aria-pressed="false"', 1)
         s = s.replace(f'data-when="{when}" aria-pressed="false"', f'data-when="{when}" aria-pressed="true"', 1)
-        out = ROOT / r["slug"] / "index.html"
-        out.parent.mkdir(exist_ok=True)
-        old = out.read_text() if out.exists() else ""
-        if old != s:
-            out.write_text(s)
-        print(f"/{r['slug']}/: {count} ({r['dates']}){'' if old != s else ' (unchanged)'}")
+    return s, count
+
+
+def pick(events, area, lo, hi):
+    out = []
+    for e in events:
+        if not (lo <= e["date"] <= hi):
+            continue
+        e = dict(e)
+        e["mi"] = miles(area["center"], e["pos"]) if e.get("pos") else None
+        # Events with no known location only show in San Antonio, where the sheet started.
+        if e["mi"] is None and area["key"] != "san-antonio":
+            continue
+        if e["mi"] is not None and e["mi"] > DEFAULT_RADIUS:
+            continue
+        out.append(e)
+    out.sort(key=lambda e: (e["date"], minutes(e["time"])))
+    return out
+
+
+def build(template, events, today):
+    urls = []
+    for area in AREAS:
+        name = area["name"]
+        base = area_template(template, area)
+
+        # The area's home page (San Antonio's home page is index.html itself, filled in by the browser).
+        if area["key"] != "san-antonio":
+            r = {"title": "Today", "dates": long(today)}
+            picked = pick(events, area, today.isoformat(), today.isoformat())
+            title = f"Bored Bandit – Things to Do in {name} Today"
+            desc = (f"Find events happening in the {name} area today, tomorrow, this weekend or any date. "
+                    f"Search concerts, markets, classes and community events near you, within 1 to 40 miles.")
+            s, count = page(base, area, "today", r, picked, title, desc, None, area_url(area))
+            changed = write(area_path(area), s)
+            print(f"{area_path(area)}: {count} today{'' if changed else ' (unchanged)'}")
+        urls.append((area_url(area), "daily"))
+
+        for when, r in ranges(today).items():
+            picked = pick(events, area, r["from"].isoformat(), r["to"].isoformat())
+            n = len(picked)
+            count = f"{n} event{'s' if n != 1 else ''}"
+            title = f"Things to Do in {name} {r['label'].title()} ({r['dates']}) – Bored Bandit"
+            desc = (f"{count} in the {name} area {r['label']}, {r['dates']}: concerts, parties, markets, "
+                    f"classes and community events, updated every day.")
+            h1 = (f'Things to do in the <span class="hl">{esc(name)} area</span> {esc(r["label"])}'
+                  f'<span class="red">.</span>')
+            url = area_url(area, r["slug"])
+            s, _ = page(base, area, when, r, picked, title, desc, h1, url)
+            changed = write(area_path(area, r["slug"]), s)
+            urls.append((url, "daily"))
+            print(f"{area_path(area, r['slug'])}: {count} ({r['dates']}){'' if changed else ' (unchanged)'}")
+
+    # Sitemap: every area page plus the fixed pages.
+    fixed = [(f"{SITE}/submit.html", "monthly"), (f"{SITE}/contact.html", "monthly")]
+    rows = "".join(f"  <url><loc>{u}</loc><changefreq>{f}</changefreq></url>\n" for u, f in urls + fixed)
+    sm = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{rows}</urlset>\n'
+    (ROOT / "sitemap.xml").write_text(sm)
 
 
 def main():

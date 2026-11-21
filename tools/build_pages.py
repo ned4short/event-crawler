@@ -301,6 +301,8 @@ def area_template(template, area):
     s = s.replace("from across the San Antonio area, " + SA_PLACES, f"from across the {name} area, " + area["places"], 1)
     s = s.replace('"description":"Search local events in San Antonio by date and distance."',
                   f'"description":"Search local events in the {name} area by date and distance."', 1)
+    # Link previews (Facebook, X, texts) show this area's own image.
+    s = s.replace("/og-image.png?v=2", f"/og-image-{area['key']}.png?v=1")
     s = re.sub(r"<h1>.*?</h1>", f'<h1>Find something to do in the <span class="hl">{esc(name)} area</span><span class="red">.</span></h1>', s, count=1, flags=re.S)
     return s
 

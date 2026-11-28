@@ -71,6 +71,20 @@
     var h = parseInt(m[1], 10) % 12 + (m[3].toUpperCase() === 'PM' ? 12 : 0);
     return h * 60 + parseInt(m[2], 10);
   }
+  // Minutes since midnight right now, in San Antonio time.
+  function nowMinutes() {
+    var parts = new Intl.DateTimeFormat('en-US', { timeZone: TZ, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+    var get = function (t) { return parseInt(parts.filter(function (p) { return p.type === t; })[0].value, 10); };
+    return get('hour') * 60 + get('minute');
+  }
+  // Events drop off 4 hours after they start (the sheet has start times only).
+  // Events with no time listed are never hidden.
+  var HIDE_AFTER_MIN = 4 * 60;
+  function isOver(e) {
+    if (e.date !== todayIso()) return e.date < todayIso();
+    var m = minutes(e.time);
+    return m < 24 * 60 && nowMinutes() - m > HIDE_AFTER_MIN;
+  }
   function miles(a, b) {
     var R = 3958.8, rad = Math.PI / 180;
     var dLat = (b.lat - a.lat) * rad, dLng = (b.lng - a.lng) * rad;
@@ -87,12 +101,17 @@
     return n;
   }
 
+  var renderedOver = 0;
+  function overToday() { var n = 0, t = todayIso(); events.forEach(function (e) { if (e.date === t && isOver(e)) n++; }); return n; }
+
   function render() {
+    renderedOver = overToday();
     renderStarred();
     var range = dateRange();
     var q = state.query.trim().toLowerCase();
     var list = events.filter(function (e) {
       if (e.date < range.from || e.date > range.to) return false;
+      if (isOver(e)) return false;
       if (q && (e.name + ' ' + e.venue + ' ' + e.city).toLowerCase().indexOf(q) === -1) return false;
       e._mi = (e.lat != null) ? miles(state.origin, e) : null;
       if (e._mi != null && e._mi > state.radius) return false;
@@ -220,7 +239,7 @@
       var s = stars[k];
       if (!s || !s.date || s.date < t) { delete stars[k]; changed = true; return null; }
       return byKey[k] || s;
-    }).filter(Boolean);
+    }).filter(function (e) { return e && !isOver(e); });
     if (changed) saveStars(stars);
 
     section.textContent = '';
@@ -509,6 +528,11 @@
     // Keep the events already written into the page; only complain if there are none.
     if (!document.querySelector('#list .event')) $('summary').textContent = 'Events couldn’t load. Please refresh the page.';
   });
+
+  // ---------- keep an open page current: drop events as they pass 4 hours ----------
+  setInterval(function () {
+    if (!document.hidden && events.length && overToday() !== renderedOver) render();
+  }, 5 * 60 * 1000);
 
   // ---------- area memory: remember the visitor's area and offer a way back ----------
   (function () {

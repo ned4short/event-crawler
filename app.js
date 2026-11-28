@@ -77,9 +77,9 @@
     var get = function (t) { return parseInt(parts.filter(function (p) { return p.type === t; })[0].value, 10); };
     return get('hour') * 60 + get('minute');
   }
-  // Events drop off 4 hours after they start (the sheet has start times only).
+  // Events drop off 3 hours after they start (the sheet has start times only).
   // Events with no time listed are never hidden.
-  var HIDE_AFTER_MIN = 4 * 60;
+  var HIDE_AFTER_MIN = 3 * 60;
   function isOver(e) {
     if (e.date !== todayIso()) return e.date < todayIso();
     var m = minutes(e.time);
@@ -529,7 +529,7 @@
     if (!document.querySelector('#list .event')) $('summary').textContent = 'Events couldn’t load. Please refresh the page.';
   });
 
-  // ---------- keep an open page current: drop events as they pass 4 hours ----------
+  // ---------- keep an open page current: drop events as they pass 3 hours ----------
   setInterval(function () {
     if (!document.hidden && events.length && overToday() !== renderedOver) render();
   }, 5 * 60 * 1000);
